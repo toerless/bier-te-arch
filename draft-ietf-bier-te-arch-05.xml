@@ -118,11 +118,14 @@ BPs are normally also reset upon forwarding to avoid duplicates and loops.
 This is detailed further below.
 </t>
 
-<t>Note that related work <xref target="ICC"/>, <xref target="I-D.ietf-roll-ccast"/>
-uses bloom filters to represent  leaves or edges of the intended delivery tree.  Bloom filters
-can support larger trees with fewer addressing bits, but they introduce the heuristic risk of
-false positives and cannot reset bits in the bitstring during forwarding to avoid loops.
-For these reasons, BIER-TE does not use bloom filters, but explicit bitstrings like BIER.</t>
+<t>Note that related work, <xref target="I-D.ietf-roll-ccast"/>
+uses bloom filters to represent leaves or edges of the intended delivery tree.  Bloom filters
+in general can support larger trees/topologies with fewer addressing bits than explicit bitstrings,
+but they introduce the heuristic risk of false positives and cannot reset bits in
+the bitstring during forwarding to avoid loops. For these reasons, BIER-TE 
+uses explicit bitstrings like BIER. The explicit bitstrings of BIER-TE can also
+be seen as a special type of bloom filter, and this is how related work <xref target="ICC"/>
+describes it.</t>
 
   <section anchor="examples" title="Basic Examples">
 
@@ -1665,8 +1668,10 @@ for their distribution, so these are not attack vectors against BIER-TE.</t>
       <t>05: Review Jeffrey Zhang.</t>
       <t>    Explicitly ue forwarded_connected adjcency in ECMP adjcency examples to avoid confusion.</t>
       <t>    4.3 Add picture as example for leav vs. non-leaf BFR in topology. Improved description.</t>
-      <t>    4.5 Exampe for traffic that can be broadcast -> for single BP in hub&spoke.</t>
+      <t>    4.5 Exampe for traffic that can be broadcast -> for single BP in hub&amp;spoke.</t>
       <t>    4.8.1 Simplified example picture for routed adjacency, explanatory text.</t>
+      <t>    Review from Dirk Trossen:</t>
+      <t>    Fixed up explanation of ICC paper vs. bloom filter.</t>
       <t>04: spell check run.</t>
       <t>    Addded remaining fixes for Sandys (Zhang Zheng) review:</t>
       <t>    4.7 Enhance ECMP explanations:</t>
