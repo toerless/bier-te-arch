@@ -42,7 +42,7 @@
 <!-- Change to "yes" if someone has disclosed IPR for the draft -->
 <!-- end of list of popular I-D processing instructions -->
 
-<rfc ipr="trust200902" docName="draft-ietf-bier-te-arch-04" category="std">
+<rfc ipr="trust200902" docName="draft-ietf-bier-te-arch-05" category="std">
         <front>
                 <title abbrev="BIER-TE ARCH">Traffic Engineering for Bit Index Explicit Replication (BIER-TE)</title>
                 <author role="editor" fullname="Toerless Eckert" initials="T.T.E." surname="Eckert">
@@ -69,7 +69,7 @@
                                 <email>menth@uni-tuebingen.de</email>
                         </address>
                 </author>
-                <date month="October" year="2019"/>
+                <date month="November" year="2019"/>
                 <abstract>
 <t>
 This memo introduces per-packet stateless strict and loose path
@@ -859,13 +859,18 @@ p2p link.</t>
 <t>Leaf BFERs are BFERs where incoming BIER-TE packets never need to
 be forwarded to another BFR but are only sent to the BFER
 to exit the BIER-TE domain. For example, in networks where PEs
-are spokes connected to P routers, those PEs are Leaf BFIRs unless
+are spokes connected to P routers, those PEs are Leaf BFERs unless
 there is a U-turn between two PEs. Consider how redundant disjoint
 traffic can reach BFER1/BFER2 in above picture: When BFER1/BFER2
-are Non-Leaf BFER as shown on the left hand side, one traffic
+are Non-Leaf BFER as shown on the right hand side, one traffic
 copy would be forwarded to BFER1 from BFR1, but the other one
 could only reach BFER1 via BFER2, which makes BFER2 a non-Leaf
 BFER. Likewise BFER1 is a non-Leaf BFER when forwarding traffic to BFER2.</t>
+
+<t>Note that the BFERs in the left hand picture are only guaranteed to
+be leaf-BFER by fitting routing configuration that prohibits transit
+traffic to pass through the BFERs, which is commonly applied in these
+topologies.</t>
 
 <t>All leaf-BFER in a BIER-TE domain can share a single BitPosition.
 This is possible because the BitPosition for the adjacency to reach the BFER
@@ -1033,7 +1038,7 @@ the use of the seed parameter.</t>
 
 <figure anchor="polarization-picture" title="Polarization Example">
 <artwork align="left"><![CDATA[
-                 BFR1
+                 BFR1         (BFIR)
                /L11  \L12
               /       \
           BFR2         BFR3
@@ -1045,7 +1050,7 @@ the use of the seed parameter.</t>
           BFR8         BFR9
               \       /
                \     /
-                BFR10
+                BFR10         (BFER)
 
   BIFT entry in BFR1:
   ------------------------------------------------------------------
@@ -1055,16 +1060,37 @@ the use of the seed parameter.</t>
 
   BIFT entry in BFR2:
   ------------------------------------------------------------------
-  | 0:6   |  ECMP({forward_connected(L21, BFR4),                   |
+  | 0:7   |  ECMP({forward_connected(L21, BFR4),                   |
   |       |        forward_connected(L22, BFR5)}, seed1)           |
   ------------------------------------------------------------------
 
   BIFT entry in BFR3:
   ------------------------------------------------------------------
-  | 0:6   |  ECMP({forward_connected(L31, BFR6),                   |
+  | 0:7   |  ECMP({forward_connected(L31, BFR6),                   |
   |       |        forward_connected(L32, BFR7)}, seed1)           |
   ------------------------------------------------------------------
+
+  BIFT entry in BFR4, BFR5:
+  ------------------------------------------------------------------
+  | 0:8   |  forward_connected(Lxx, BFR8)  |xx differs on BFR4/BFR5|
+  ------------------------------------------------------------------
+
+  BIFT entry in BFR6, BFR7:
+  ------------------------------------------------------------------
+  | 0:8   |  forward_connected(Lxx, BFR9)  |xx differs on BFR6/BFR7|
+  ------------------------------------------------------------------
+
+  BIFT entry in BFR8, BFR9:
+  ------------------------------------------------------------------
+  | 0:9   |  forward_connected(Lxx, BFR10) |xx differs on BFR8/BFR9|
+  ------------------------------------------------------------------
+  
 ]]></artwork></figure>
+
+<t>Note that for the following discussion of ECMP, only the BIFT ECMP
+adjacencies on BFR1, BFR2, BFR3 are relevant. The re-use of BP across
+BFR in this example is further explained in <xref target="reuse"/>
+below.</t>
 
 <t> With the setup of ECMP in above topology, traffic would not be
 equally load-split. Instead, links L22 and L31 would see no traffic
@@ -1076,22 +1102,19 @@ seed1, and will therefore again select the first of its two adjacencies:
 L21-to-BFR4. And therefore L22 and BFR5 sees no traffic. Likewise for
 L31 and BFR6.</t>
 
-<t>To resolve this issue, the ECMP adjacency on BFR1 simply needs to
-be set up with a different seed2 than the ECMP adjacencies on BFR2/BFR3.
-ECMP in BFR2 could use the same seed2 to avoid its issue.</t>
+<t>This issue in BFR2/BFR3 is called polarization. It results from the
+re-use of the same hash function across multiple consecutive hops in
+topologies like these.  To resolve this issue, the ECMP adjacency on BFR1 
+can be set up with a different seed2 than the ECMP adjacencies on BFR2/BFR3.
+BFR2/BFR3 can use the same hash because packets will not sequentially
+pass across both of them. Therefore, they can also use the same BP 0:7.</t>
 
-<t>This issue in BFR2/BFR3 is called polarization. It depends on the
-ECMP hash. Instead of explicitly setting up different seeds in
-consecutive BFR in a topology subject to polarization, it is possible
-to build ECMP that does not have polarization, for example by taking
-entropy from the actual adjacency members into account such as the next-hop
-identifiers like L11-to-BFR2 and, but that can make it harder to
-achieve evenly balanced load-splitting on all BFR without making
-the ECMP hash algorithm potentially too complex for fast forwarding
-in the BFRs. In addition, these type of polarization free ECMP
-algorithms likely make it harder for a BIER-TE controller host to calculate
-entropy fields for BIER-TE headers that would flow on the same or different
-ECMP paths. With polarizing algorithms, this is typically easier.</t>
+<t>Note that ECMP solutions outside of BIER often hide the
+seed by auto-selecting it from local entropy such as unique local or
+next-hop identifiers.  The solutions choosen for BIER-TE to allow the controller
+to explicitly set the seed maximizes the ability of the controller to choose the seed,
+independent of such seed source that the controller may not be able to control
+well, and even calculate optimized seeds for multi-hop cases.</t>
 
     </section>
     <!-- ecmp -->
@@ -1143,6 +1166,86 @@ adjacencies are used to pass over non BIER-TE enabled nodes.</t>
     </section>
     <!-- routed -->
 
+      <section anchor="reuse" title="Reuse of BitPositions (without DNR)">
+
+<t>BitPositions can be re-used across multiple BFR to minimize the number
+of BP needed. This happens when adjacencies on multiple BFR use the DNR
+flag as described above, but it can also be done for non-DNR adjacencies.
+This section only discussses this non-DNR case.</t>
+
+<t>Because BP are reset after passing a BFR with an adjacency for that
+BP, reuse of BP across multiple BFR does not introduce any problems
+with duplicates or loops that do not also exist when every adjacency has
+a unique BP: Instead of setting one BP in a BitString that is reused in
+N-adjacencies, one would get the same or worse results if each of these
+adjacencies had a unique BP and all of them where set in the BitString.
+Instead, based on the case, BPs can be reused without limitation, or
+they introduce fewer path engineering choices, or they do not work.</t>
+
+<t>BP cannot be reused across two BFR that would need to be passed
+sequentially for some path: The first BFR will reset the BP, so those
+paths cannot be built. BP can be set across BFR that would (A) only
+occur across different paths or (B) across different branches of the same tree.</t>
+
+<t>An example of (A) was given in <xref target="polarization-picture"/>,
+where BP 0:7, BP 0:8 and BP 0:9 are each reused across multiple BFR because
+a single packet/path would never be able to reach more than one BFR 
+sharing the same BP.</t>
+
+<t>Assume the example was changed: BFR1 has no ECMP adjacency for BP 0:6,
+but instead BP 0:5 with forward_connected to BFR2 and BP 0:6 with
+forward_connected to BFR3.  Packets with both BP 0:5 and BP 0:6 would
+now be able to reach both BFR2 and BFR3 and the still existing re-use
+of BP 0:7 between BFR2 and BFR3 is a case of (B) where reuse of BP
+is perfect because it does not limit the set of useful path choices:</t>
+
+<t>If instead of reusing BP 0:7, BFR3 used a separate BP 0:10 for its
+ECMP adjacency, no useful additional path engineering would be enabled.
+If duplicates at BFR10 where undesirable, this would be done by not
+setting BP 0:5 and BP 0:6 for the same packet. If the duplicates where
+desirable (e.g.: resilient transmission), the additional BP 0:10
+would also not render additional value.</t>
+
+<t>Reuse may also save BPs in larger topologies.  Consider the topology
+shown in <xref target="scaling-picture"/>, but only the following
+explanations: A BFIR/sender (e.g.: video headend) is attached to area 1,
+and area 2...6 contain receivers/BFER. Assume each area had a distribution
+ring, each with two BPs to indicate the direction (as explained in before). 
+These two BPs could be reused across the 5 areas.  Packets would be replicated
+through other BPs to the desired subset of areas, and once a packet copy
+reaches the ring of the area, the two ring BPs come into play. This reuse is 
+a case of (B), but it limits the topology choices: Packets
+can only flow around the same direction in the rings of all areas. This may or may not
+be acceptable based on the desired traffic engineering: If resilient
+transmission is the traffic engineering goal, then it is likely a good
+optimization, if the bandwidth of each ring was to be optimized separately,
+it would not be a good limitation.</t>
+
+      </section>
+      <section anchor="bits-summary" title="Summary of BP optimizations">
+
+<t>This section reviewed a range of techniques by which a controller can create
+a BIER-TE topology in a way that minimizes the number of necessary BPs.</t>
+
+<t>Without any optimization, a controller would attempt to map the network
+subnet topology 1:1 into the BIER-TE topology and  every subnet adjacent
+neighbor requires a forward_connected BP and every BFER requires a local_decap BP.</t>
+
+<t>The optimizations described are then as follows:<list style="symbols">
+  <t>P2p links require only one BP (<xref target="p2p-links"/>).</t>
+  <t>All leaf-BFER can share a single local_decap BP (<xref target="leaf-bfers"/>).</t>
+  <t>A LAN with N BFR needs at most N BP (one for each BFR). It only needs one BP for all those BFR tha are not redundanty connected to multiple LANs (<xref target="lans"/>).</t>
+  <t>A hub with p2p connections to multiple non-leaf-BFER spokes can share one BP to all spokes if traffic can be flooded to all spokes, e.g.: because of no bandwidth concerns or dense receiver sets (<xref target="hubnspoke"/>).</t>
+  <t>Rings of BFR can be built with just two BP (one for each direction) except for BFR with multiple ring connections - similar to LANs (<xref target="rings"/>).</t>
+  <t>ECMP adjacencies to N neighbors can replace N BP with 1 BP. Multihop ECMP can avoid polarization through different seeds of the ECMP algorithm (<xref target="ecmp"/>).</t>
+  <t>Routed adjacencies allow to "tunnel" across non-BIER-TE capable routers and across BIER-TE capable routers where no traffic-steering or replications are required (<xref target="routed"/>).</t>
+  <t>BP can generally be reused across nodes that do not need to be consecutive in paths, but depending on scenario, this may limit the feasible traffic engineering options (<xref target="reuse"/>).</t>
+</list></t>
+
+<t>Note that the described list of optimizations is not exhaustive. Especially when the set of required path engineering choices is limited and the set of possible subsets of BFER that should be able to receive traffic is limited, further optimizations of BP are possible. The hub &amp; spoke optimization is a simple example of such traffic pattern dependent optimizations.</t>
+
+      </section>
+
   </section>
   <!-- bitpositions -->
 
@@ -1152,7 +1255,7 @@ adjacencies are used to pass over non BIER-TE enabled nodes.</t>
 
 <t>Whenever BIER-TE creates a copy of a packet, the BitString of
 that copy will have all BitPositions cleared that are associated
-with adjacencies in the BFR. This inhibits looping of packets.
+with adjacencies on the BFR. This inhibits looping of packets.
 The only exception are adjacencies with DNR set.</t>
 
 <t>With DNR set, looping can happen.  Consider in the ring picture
@@ -1189,6 +1292,7 @@ Such re-addressing operations must be coordinated with the controller.</t>
     </section>
     <!-- duplicates -->
 
+
   </section>
   <!-- avoiding -->
 
@@ -1222,34 +1326,28 @@ can be forward_connected, forward_routed or local_decap.</t>
    }
 ]]></artwork></figure>
 
-<t>The difference is that in BIER-TE, step [1] must not be performed.</t>
+<t>The difference is that in BIER-TE, step [1] must not be performed,
+but is replaced with [2] (when the forwarding plane algorithm is
+implemented verbatim as shown above).</t>
 
-<t>In BIER, this step is necessary to avoid duplicates when two or more
-BFER are reachable via the same neighbor. The F-BM of all those BFER
-bits will indicate each other's bits, and step [1] will reset all these
-bits on the first copy made for the first of those BFER bits set in the
-BitString, hence skipping any further copies to that neighbor.</t>
+<t>In BIER, the F-BM of a BP has all BP set that are meant to
+be forwarded via the same neighbor. It is used to reset those BP in the
+packet after the first copy to this neighbor has been made to inhibit multiple
+copies to the same neighbor.</t>
 
-<t>Whereas in BIER, the F-BM of bits toward a specific neighbor contain
-only the bits of those BFER destined to be forwarded across this neighbor,
-in BIER-TE the F-BM for a neighbor needs to have all bits set except
-all those bits that are actual (non-empty) adjacencies of this BFR. Step [2] will reset
-those adjacency bits to avoid loops, but all the other bits that are not
-adjacencies of this BFR need to stay untouched by [2] so that they can be 
-processed by further BFR along the path.  If [1] was performed as in BIER, then
-those non-adjacency bits would erroneously get reset during replication.</t>
+<t>In BIER-TE, the F-BM of a particular BP with an adjacency is the list of all
+BPs with an adjacency on this BFR except the particular BP itself if it has
+an adjacency with the DNR bit set. The F-BM is used to reset the F-BM BPs
+before creating copies.</t>
 
-<t>To support the DNR (Do Not Reset) flag of forward_connected() adjacencies,
-the F-BM must also have its own bit set in the F-BM of such an adjacency
-, so that for the packet copy made for this adjacency the bit stays on,
-whereas it will not be set in the F-BM of other bits so that it will be reset for
-any other packet copy made.</t>
+<t>In BIER, the order of BPs impacts the result of forwarding because of [1].
+In BIER-TE, forwarding is not impacted by the order of BPs. It is therefore
+possible to further optimize forwarding than in BIER. For example, BIER-TE
+forwarding can be parallelized such that a parallel instance (such as an
+egres linecard) can process any subset of BPs without any considerations
+for the other BPs - and without any prior, cross-BP shared processing.</t>
 
-<t>Eliminating the need to perform [1] also makes processing of bits in
-the BIER-TE bitstring independent of processing other bits, which may also simplify
-forwarding plane implementations.</t>
-
-<t>The following pseudocode is comprehensive:
+<t>The above simplified pseudocode is elaborated further as follows:
 <list style="symbols">
     <t>This pseudocode eliminates per-bit F-BM, therefore reducing state by BitStringLength^2*SI and eliminating the need for per-packet-copy masking operation except for adjacencies with DNR flag set:
     <list style="symbols">
@@ -1658,7 +1756,7 @@ for their distribution, so these are not attack vectors against BIER-TE.</t>
 
   <section anchor="ack" title="Acknowledgements">
 
-  <t>The authors would like to thank Greg Shepherd, Ijsbrand Wijnands and Neale Ranns for their extensive review and suggestions.</t>
+  <t>The authors would like to thank Greg Shepherd, Ijsbrand Wijnands, Neale Ranns, Dirk Trossen, Sandy Zheng and Jeffrey Zhang for their extensive review and suggestions.</t>
   </section>
   <!-- ack -->
 
@@ -1666,6 +1764,13 @@ for their distribution, so these are not attack vectors against BIER-TE.</t>
   <t>draft-ietf-bier-te-arch:
     <list>
       <t>05: Review Jeffrey Zhang.</t>
+      <t>    Part 2:</t>
+      <t>    4.3 added note about leaf-BFER being also a propery of routing setup.</t>
+      <t>    4.7 Added missing details from example to avoid confusion with routed adjacencies, also compressed explanatory text and better justification why seed is explicitly configured by controller.</t>
+      <t>    4.9 added section discussing generic reuse of BP methods.</t>
+      <t>    4.10 added section summarizing BP optimizations of section 4.</t>
+      <t>    6. Rewrote/compressed explanation of comparison BIER/BIER-TE forwarding difference. Explained benefit of BIER-TE per-BP forwarding being independent of forwarding for other BPs.</t>
+      <t>    Part 1:</t>
       <t>    Explicitly ue forwarded_connected adjcency in ECMP adjcency examples to avoid confusion.</t>
       <t>    4.3 Add picture as example for leav vs. non-leaf BFR in topology. Improved description.</t>
       <t>    4.5 Exampe for traffic that can be broadcast -> for single BP in hub&amp;spoke.</t>
