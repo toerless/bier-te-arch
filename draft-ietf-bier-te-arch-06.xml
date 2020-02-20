@@ -44,7 +44,7 @@
 <!-- Change to "yes" if someone has disclosed IPR for the draft -->
 <!-- end of list of popular I-D processing instructions -->
 
-<rfc ipr="trust200902" docName="draft-ietf-bier-te-arch-05" category="std">
+<rfc ipr="trust200902" docName="draft-ietf-bier-te-arch-06" category="std">
         <front>
                 <title abbrev="BIER-TE ARCH">Path Engineering for Bit Index Explicit Replication (BIER-TE)</title>
                 <author role="editor" fullname="Toerless Eckert" initials="T.T.E." surname="Eckert">
@@ -76,10 +76,10 @@
 <t>
 This memo introduces per-packet stateless strict and loose path
 engineered replication and forwarding for Bit Index Explicit Replication
-packets ([RFC8279]). This is called BIER-TE.
+packets (RFC8279). This is called BIER-TE.
 </t>
 
-<t> BIER-TE leverages the BIER architecture (<xref target="RFC8279"/>)
+<t> BIER-TE leverages RFC8279
 and extends it with a new semantic for bits in the bitstring. BIER-TE
 can leverage BIER forwarding engines with little or no changes.</t>
 
@@ -141,7 +141,7 @@ BIER-TE and SR.</t>
 
 <t>BIER-TE can be used alone in use cases not requiring bandwidth or buffer resource reservations,
 such as high resilient services through dual transmission with engineered path diversity or optimization
-of network capacity utilization ("load balancing across non-ECMP paths") through engineered paths/trees.
+of network capacity utilization through engineered paths/trees ("load balancing across non-ECMP paths").
 BIER-TE it is intended to scale better for the number of multicast flows in these use cases than traditional
 IP multicast plus other stateful path engineering mechanisms due to its stateless nature.</t>
 

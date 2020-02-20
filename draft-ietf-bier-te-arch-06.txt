@@ -12,17 +12,17 @@ Expires: August 22, 2020                                Bouygues Telecom
 
 
      Path Engineering for Bit Index Explicit Replication (BIER-TE)
-                       draft-ietf-bier-te-arch-05
+                       draft-ietf-bier-te-arch-06
 
 Abstract
 
    This memo introduces per-packet stateless strict and loose path
    engineered replication and forwarding for Bit Index Explicit
-   Replication packets ([RFC8279]).  This is called BIER-TE.
+   Replication packets (RFC8279).  This is called BIER-TE.
 
-   BIER-TE leverages the BIER architecture ([RFC8279]) and extends it
-   with a new semantic for bits in the bitstring.  BIER-TE can leverage
-   BIER forwarding engines with little or no changes.
+   BIER-TE leverages RFC8279 and extends it with a new semantic for bits
+   in the bitstring.  BIER-TE can leverage BIER forwarding engines with
+   little or no changes.
 
    In BIER, the BitPositions (BP) of the packets bitstring indicate BIER
    Forwarding Egress Routers (BFER), and hop-by-hop forwarding uses a
@@ -196,20 +196,21 @@ Internet-Draft                BIER-TE ARCH                 February 2020
 
 1.1.  BIER-TE and Traffic Engineering
 
-   BIER-TE is not a standalone, complete traffic engineering solution
-   like RSVP with RSVP-TE extensions ([RFC2205], [RFC3209]).  Instead it
-   is a BIER derived forwarding plane that allows to signal engineered
-   path and replication points without per-path/replication-point state
-   on the transit nodes.  It is therefore more similar to Segment
-   Routing (SR ([RFC8402])) than RSVP-TE, except that SR does not
-   provide stateless replication point and receiver set signaling.  See
-   Section 8 for more detailled comparison and integration with SR.
+   BIER-TE is not a standalone, complete traffic engineering signaling
+   solution like RSVP with RSVP-TE extensions ([RFC2205], [RFC3209]).
+   Instead it is a BIER derived architecture and forwarding plane that
+   allows to signal "source-routed" engineered path and replication
+   points without per-path/replication-point state on the transit nodes.
+   It is therefore more similar to Segment Routing (SR, ([RFC8402]))
+   than RSVP-TE, except that SR does not provide stateless replication
+   point and receiver set signaling in its packet header.  See Section 8
+   for a more detailled discussion of BIER-TE and SR.
 
    BIER-TE can be used alone in use cases not requiring bandwidth or
    buffer resource reservations, such as high resilient services through
    dual transmission with engineered path diversity or optimization of
-   network capacity utilization ("load balancing across non-ECMP paths")
-   through engineered paths/trees.  BIER-TE it is intended to scale
+   network capacity utilization through engineered paths/trees ("load
+   balancing across non-ECMP paths").  BIER-TE it is intended to scale
    better for the number of multicast flows in these use cases than
    traditional IP multicast plus other stateful path engineering
    mechanisms due to its stateless nature.
@@ -217,7 +218,6 @@ Internet-Draft                BIER-TE ARCH                 February 2020
    BIER-TE could be combined with transit-node stateless bandwidth
    admission control (AC) mechanisms to provide path engineered
    multicast traffic with bandwidth reservations.  In Section 2 below,
-
 
 
 
