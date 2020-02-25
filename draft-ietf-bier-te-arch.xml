@@ -45,7 +45,7 @@
 <!-- Change to "yes" if someone has disclosed IPR for the draft -->
 <!-- end of list of popular I-D processing instructions -->
 
-<rfc ipr="trust200902" docName="draft-ietf-bier-te-arch-06" category="std">
+<rfc ipr="trust200902" docName="draft-ietf-bier-te-arch-07" category="std">
         <front>
                 <title abbrev="BIER-PE ARCH">Path Engineering for Bit Index Explicit Replication (BIER-PE)</title>
                 <author role="editor" fullname="Toerless Eckert" initials="T.T.E." surname="Eckert">
@@ -110,6 +110,17 @@ require a BIER routing underlay, and can then be operated without requiring an I
 
   <section anchor="intro" title="Introduction">
 
+<t>[RFC-editor: This block to be removed before publishing.
+Explanation for name change from BIER-TE to BIER-PE in WG last-call (for IETF/IESG review):
+This document started out calling the technology BIER-TE (Traffic Engineering) as
+it is a mode of BIER to support policy based steering of traffic, which is typically a 
+component of a traffic engineering solution. Nevertheless, this BIER technology 
+itself does not provide a complete traffic engineering solution for BIER but would require
+combination with other technologies for a full BIER based TE solution (such as a PCE and
+queuing mechanisms to provide bandwidth and latency reservations).  Because the name of
+such an overall solution would ideally be BIER-TE, the name for this technology was
+changed during last-call to BIER-PE (Path Engineering).]</t>
+
 <t> BIER-PE shares architecture, terminology and packet formats with BIER as
 described in <xref target="RFC8279"/> and <xref target="RFC8296"/>. This
 document describes BIER-PE in the expectation that the reader is familiar
@@ -131,6 +142,8 @@ the bitstring during forwarding to avoid loops. For these reasons, BIER-PE
 uses explicit bitstrings like BIER. The explicit bitstrings of BIER-PE can also
 be seen as a special type of bloom filter, and this is how related work <xref target="ICC"/>
 describes it.</t>
+
+<!--  Removed for now by review with Lou Berger
 
   <section anchor="te" title="BIER-PE and Traffic Engineering (BIER-TE)">
 
@@ -176,6 +189,8 @@ per-flow, per-hop multicast replication and steering state.</t>
 the scope of this document.  See <xref target="I-D.eckert-teas-bier-te-framework"/>.</t>
 
   </section>
+
+-->
 
   <section anchor="examples" title="Basic Examples">
 
@@ -1522,13 +1537,13 @@ on the desire of the operator to allow for explicit path steeering across
 every single hop (which requires more bits), or reducing the number of required
 bits by exploiting optimizations such as unicast (forward_route), ECMP or flood
 (DNR) over "uninteresting" sub-parts of the topology - e.g. parts where different
-trees do not need to take different paths due to traffic engineering reasons.</t>
+trees do not need to take different paths due to path steering reasons.</t>
 
 <t>The total number of bits to describe the topology vs. the BFER in a BIFT:SI can
 range widely based on the size of the topology and the amount of alternative paths
 in it. The higher the percentage, the higher the likelihood, that those topology
 bits are not just BIER-PE overhead without additional benefit, but instead that they
-will allow to express desirable traffic engineering path alternatives.</t>
+will allow to express desirable path steering alternatives.</t>
 
     </section>
     <!-- comparison -->
@@ -1806,7 +1821,7 @@ for their distribution, so these are not attack vectors against BIER-PE.</t>
 
   <section anchor="ack" title="Acknowledgements">
 
-  <t>The authors would like to thank Greg Shepherd, Ijsbrand Wijnands, Neale Ranns, Dirk Trossen, Sandy Zheng and Jeffrey Zhang for their extensive review and suggestions.</t>
+  <t>The authors would like to thank Greg Shepherd, Ijsbrand Wijnands, Neale Ranns, Dirk Trossen, Sandy Zheng, Lou Berger and Jeffrey Zhang for their reviews and suggestions.</t>
   </section>
   <!-- ack -->
 
@@ -1814,7 +1829,9 @@ for their distribution, so these are not attack vectors against BIER-PE.</t>
   <t>draft-ietf-bier-te-arch:
     <list>
       <t>07: Further reworking text for Lou.</t>
-      <t>    Renamed BIER-TE to BIER-PE - Path Engineering. "Path Engineering" is a brand name for what BIER-PE does, its is better than just "steering", because each bit in a bitstring not only serves steering, but can also control replications.</t>
+      <t>    Renamed BIER-TE to BIER-PE - Path Engineering. "Path Engineering" is a new term for what BIER-PE does, its is better than just "steering", because each bit in a bitstring not only serves steering, but can also control replications.</t>
+      <t>    Removed section 1.1 (introduced by version 06) because not considered necessary in this doc by Lou (for framework doc).</t>
+      <t>    Added [RFC editor pls. remove] Section to explain name change to future reviewers.</t>
       <t>06: Concern by Lou Berger re. BIER-TE as full traffic engineering solution.</t>
       <t>    Changed title "Traffic Engineering" to "Path Engineering"</t>
       <t>    Added intro section of relationship BIER-TE to traffic engineering.</t>
@@ -1914,6 +1931,7 @@ for their distribution, so these are not attack vectors against BIER-PE.</t>
 
 <references title="Informative References">
       &RFC2119;
+<!--
       &RFC2205;
       &RFC2212;
       &RFC3209;
@@ -1921,6 +1939,7 @@ for their distribution, so these are not attack vectors against BIER-PE.</t>
       &RFC8402;
       <?rfc include="reference.I-D.qiang-detnet-large-scale-detnet"?>
       <?rfc include="reference.I-D.eckert-teas-bier-te-framework"?>
+-->
       <?rfc include="reference.I-D.ietf-bier-multicast-http-response"?>
       <?rfc include="reference.I-D.ietf-roll-ccast"?>
       <reference anchor="ICC" target="https://ieeexplore.ieee.org/document/7511036">

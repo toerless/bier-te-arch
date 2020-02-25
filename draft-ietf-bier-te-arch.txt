@@ -5,14 +5,14 @@
 Network Working Group                                     T. Eckert, Ed.
 Internet-Draft                                                 Futurewei
 Intended status: Standards Track                              G. Cauchie
-Expires: August 27, 2020                                Bouygues Telecom
+Expires: August 28, 2020                                Bouygues Telecom
                                                                 M. Menth
                                                  University of Tuebingen
-                                                       February 24, 2020
+                                                       February 25, 2020
 
 
      Path Engineering for Bit Index Explicit Replication (BIER-PE)
-                       draft-ietf-bier-te-arch-06
+                       draft-ietf-bier-te-arch-07
 
 Abstract
 
@@ -53,7 +53,7 @@ Abstract
 
 
 
-Eckert, et al.           Expires August 27, 2020                [Page 1]
+Eckert, et al.           Expires August 28, 2020                [Page 1]
 
 Internet-Draft                BIER-PE ARCH                 February 2020
 
@@ -73,7 +73,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on August 27, 2020.
+   This Internet-Draft will expire on August 28, 2020.
 
 Copyright Notice
 
@@ -93,84 +93,98 @@ Copyright Notice
 Table of Contents
 
    1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   4
-     1.1.  BIER-PE and Traffic Engineering (BIER-TE) . . . . . . . .   4
-     1.2.  Basic Examples  . . . . . . . . . . . . . . . . . . . . .   5
-     1.3.  BIER-PE Topology and adjacencies  . . . . . . . . . . . .   8
-     1.4.  Comparison with BIER  . . . . . . . . . . . . . . . . . .   9
-     1.5.  Requirements Language . . . . . . . . . . . . . . . . . .   9
-   2.  Components  . . . . . . . . . . . . . . . . . . . . . . . . .   9
-     2.1.  The Multicast Flow Overlay  . . . . . . . . . . . . . . .  10
-     2.2.  The BIER-PE Controller  . . . . . . . . . . . . . . . . .  10
+     1.1.  Basic Examples  . . . . . . . . . . . . . . . . . . . . .   4
+     1.2.  BIER-PE Topology and adjacencies  . . . . . . . . . . . .   7
+     1.3.  Comparison with BIER  . . . . . . . . . . . . . . . . . .   8
+     1.4.  Requirements Language . . . . . . . . . . . . . . . . . .   8
+   2.  Components  . . . . . . . . . . . . . . . . . . . . . . . . .   8
+     2.1.  The Multicast Flow Overlay  . . . . . . . . . . . . . . .   9
+     2.2.  The BIER-PE Controller  . . . . . . . . . . . . . . . . .   9
        2.2.1.  Assignment of BitPositions to adjacencies of the
-               network topology  . . . . . . . . . . . . . . . . . .  11
-       2.2.2.  Changes in the network topology . . . . . . . . . . .  11
-       2.2.3.  Set up per-multicast flow BIER-PE state . . . . . . .  11
-       2.2.4.  Link/Node Failures and Recovery . . . . . . . . . . .  12
+               network topology  . . . . . . . . . . . . . . . . . .  10
+       2.2.2.  Changes in the network topology . . . . . . . . . . .  10
+       2.2.3.  Set up per-multicast flow BIER-PE state . . . . . . .  10
+       2.2.4.  Link/Node Failures and Recovery . . . . . . . . . . .  11
+     2.3.  The BIER-PE Forwarding Layer  . . . . . . . . . . . . . .  11
 
 
 
-Eckert, et al.           Expires August 27, 2020                [Page 2]
+Eckert, et al.           Expires August 28, 2020                [Page 2]
 
 Internet-Draft                BIER-PE ARCH                 February 2020
 
 
-     2.3.  The BIER-PE Forwarding Layer  . . . . . . . . . . . . . .  12
-     2.4.  The Routing Underlay  . . . . . . . . . . . . . . . . . .  12
-   3.  BIER-PE Forwarding  . . . . . . . . . . . . . . . . . . . . .  12
-     3.1.  The Bit Index Forwarding Table (BIFT) . . . . . . . . . .  12
-     3.2.  Adjacency Types . . . . . . . . . . . . . . . . . . . . .  14
-       3.2.1.  Forward Connected . . . . . . . . . . . . . . . . . .  14
-       3.2.2.  Forward Routed  . . . . . . . . . . . . . . . . . . .  14
-       3.2.3.  ECMP  . . . . . . . . . . . . . . . . . . . . . . . .  14
-       3.2.4.  Local Decap . . . . . . . . . . . . . . . . . . . . .  15
-     3.3.  Encapsulation considerations  . . . . . . . . . . . . . .  15
-     3.4.  Basic BIER-PE Forwarding Example  . . . . . . . . . . . .  15
-     3.5.  Forwarding comparison with BIER . . . . . . . . . . . . .  18
-     3.6.  Requirements  . . . . . . . . . . . . . . . . . . . . . .  18
-   4.  BIER-PE Controller BitPosition Assignments  . . . . . . . . .  19
-     4.1.  P2P Links . . . . . . . . . . . . . . . . . . . . . . . .  19
-     4.2.  BFER  . . . . . . . . . . . . . . . . . . . . . . . . . .  19
-     4.3.  Leaf BFERs  . . . . . . . . . . . . . . . . . . . . . . .  19
-     4.4.  LANs  . . . . . . . . . . . . . . . . . . . . . . . . . .  20
-     4.5.  Hub and Spoke . . . . . . . . . . . . . . . . . . . . . .  21
-     4.6.  Rings . . . . . . . . . . . . . . . . . . . . . . . . . .  21
-     4.7.  Equal Cost MultiPath (ECMP) . . . . . . . . . . . . . . .  22
-     4.8.  Routed adjacencies  . . . . . . . . . . . . . . . . . . .  25
-       4.8.1.  Reducing BitPositions . . . . . . . . . . . . . . . .  25
-       4.8.2.  Supporting nodes without BIER-PE  . . . . . . . . . .  25
-     4.9.  Reuse of BitPositions (without DNR) . . . . . . . . . . .  25
-     4.10. Summary of BP optimizations . . . . . . . . . . . . . . .  27
-   5.  Avoiding loops and duplicates . . . . . . . . . . . . . . . .  28
-     5.1.  Loops . . . . . . . . . . . . . . . . . . . . . . . . . .  28
-     5.2.  Duplicates  . . . . . . . . . . . . . . . . . . . . . . .  28
-   6.  BIER-PE Forwarding Pseudocode . . . . . . . . . . . . . . . .  28
-   7.  Managing SI, subdomains and BFR-ids . . . . . . . . . . . . .  31
-     7.1.  Why SI and sub-domains  . . . . . . . . . . . . . . . . .  32
-     7.2.  Bit assignment comparison BIER and BIER-PE  . . . . . . .  33
-     7.3.  Using BFR-id with BIER-PE . . . . . . . . . . . . . . . .  33
-     7.4.  Assigning BFR-ids for BIER-PE . . . . . . . . . . . . . .  34
-     7.5.  Example bit allocations . . . . . . . . . . . . . . . . .  35
-       7.5.1.  With BIER . . . . . . . . . . . . . . . . . . . . . .  35
-       7.5.2.  With BIER-PE  . . . . . . . . . . . . . . . . . . . .  36
-     7.6.  Summary . . . . . . . . . . . . . . . . . . . . . . . . .  37
-   8.  BIER-PE and Segment Routing . . . . . . . . . . . . . . . . .  37
-   9.  Security Considerations . . . . . . . . . . . . . . . . . . .  38
-   10. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  39
-   11. Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .  39
-   12. Change log [RFC Editor: Please remove]  . . . . . . . . . . .  39
-   13. References  . . . . . . . . . . . . . . . . . . . . . . . . .  44
-     13.1.  Normative References . . . . . . . . . . . . . . . . . .  44
-     13.2.  Informative References . . . . . . . . . . . . . . . . .  44
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  45
+     2.4.  The Routing Underlay  . . . . . . . . . . . . . . . . . .  11
+   3.  BIER-PE Forwarding  . . . . . . . . . . . . . . . . . . . . .  11
+     3.1.  The Bit Index Forwarding Table (BIFT) . . . . . . . . . .  11
+     3.2.  Adjacency Types . . . . . . . . . . . . . . . . . . . . .  13
+       3.2.1.  Forward Connected . . . . . . . . . . . . . . . . . .  13
+       3.2.2.  Forward Routed  . . . . . . . . . . . . . . . . . . .  13
+       3.2.3.  ECMP  . . . . . . . . . . . . . . . . . . . . . . . .  13
+       3.2.4.  Local Decap . . . . . . . . . . . . . . . . . . . . .  14
+     3.3.  Encapsulation considerations  . . . . . . . . . . . . . .  14
+     3.4.  Basic BIER-PE Forwarding Example  . . . . . . . . . . . .  14
+     3.5.  Forwarding comparison with BIER . . . . . . . . . . . . .  17
+     3.6.  Requirements  . . . . . . . . . . . . . . . . . . . . . .  17
+   4.  BIER-PE Controller BitPosition Assignments  . . . . . . . . .  18
+     4.1.  P2P Links . . . . . . . . . . . . . . . . . . . . . . . .  18
+     4.2.  BFER  . . . . . . . . . . . . . . . . . . . . . . . . . .  18
+     4.3.  Leaf BFERs  . . . . . . . . . . . . . . . . . . . . . . .  18
+     4.4.  LANs  . . . . . . . . . . . . . . . . . . . . . . . . . .  19
+     4.5.  Hub and Spoke . . . . . . . . . . . . . . . . . . . . . .  20
+     4.6.  Rings . . . . . . . . . . . . . . . . . . . . . . . . . .  20
+     4.7.  Equal Cost MultiPath (ECMP) . . . . . . . . . . . . . . .  21
+     4.8.  Routed adjacencies  . . . . . . . . . . . . . . . . . . .  24
+       4.8.1.  Reducing BitPositions . . . . . . . . . . . . . . . .  24
+       4.8.2.  Supporting nodes without BIER-PE  . . . . . . . . . .  24
+     4.9.  Reuse of BitPositions (without DNR) . . . . . . . . . . .  24
+     4.10. Summary of BP optimizations . . . . . . . . . . . . . . .  26
+   5.  Avoiding loops and duplicates . . . . . . . . . . . . . . . .  27
+     5.1.  Loops . . . . . . . . . . . . . . . . . . . . . . . . . .  27
+     5.2.  Duplicates  . . . . . . . . . . . . . . . . . . . . . . .  27
+   6.  BIER-PE Forwarding Pseudocode . . . . . . . . . . . . . . . .  27
+   7.  Managing SI, subdomains and BFR-ids . . . . . . . . . . . . .  30
+     7.1.  Why SI and sub-domains  . . . . . . . . . . . . . . . . .  31
+     7.2.  Bit assignment comparison BIER and BIER-PE  . . . . . . .  32
+     7.3.  Using BFR-id with BIER-PE . . . . . . . . . . . . . . . .  32
+     7.4.  Assigning BFR-ids for BIER-PE . . . . . . . . . . . . . .  33
+     7.5.  Example bit allocations . . . . . . . . . . . . . . . . .  34
+       7.5.1.  With BIER . . . . . . . . . . . . . . . . . . . . . .  34
+       7.5.2.  With BIER-PE  . . . . . . . . . . . . . . . . . . . .  35
+     7.6.  Summary . . . . . . . . . . . . . . . . . . . . . . . . .  36
+   8.  BIER-PE and Segment Routing . . . . . . . . . . . . . . . . .  36
+   9.  Security Considerations . . . . . . . . . . . . . . . . . . .  37
+   10. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  38
+   11. Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .  38
+   12. Change log [RFC Editor: Please remove]  . . . . . . . . . . .  38
+   13. References  . . . . . . . . . . . . . . . . . . . . . . . . .  43
+     13.1.  Normative References . . . . . . . . . . . . . . . . . .  43
+     13.2.  Informative References . . . . . . . . . . . . . . . . .  43
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  44
 
 
 
-Eckert, et al.           Expires August 27, 2020                [Page 3]
+
+Eckert, et al.           Expires August 28, 2020                [Page 3]
 
 Internet-Draft                BIER-PE ARCH                 February 2020
 
 
 1.  Introduction
+
+   [RFC-editor: This block to be removed before publishing.  Explanation
+   for name change from BIER-TE to BIER-PE in WG last-call (for IETF/
+   IESG review): This document started out calling the technology BIER-
+   TE (Traffic Engineering) as it is a mode of BIER to support policy
+   based steering of traffic, which is typically a component of a
+   traffic engineering solution.  Nevertheless, this BIER technology
+   itself does not provide a complete traffic engineering solution for
+   BIER but would require combination with other technologies for a full
+   BIER based TE solution (such as a PCE and queuing mechanisms to
+   provide bandwidth and latency reservations).  Because the name of
+   such an overall solution would ideally be BIER-TE, the name for this
+   technology was changed during last-call to BIER-PE (Path
+   Engineering).]
 
    BIER-PE shares architecture, terminology and packet formats with BIER
    as described in [RFC8279] and [RFC8296].  This document describes
@@ -194,71 +208,7 @@ Internet-Draft                BIER-PE ARCH                 February 2020
    BIER-PE can also be seen as a special type of bloom filter, and this
    is how related work [ICC] describes it.
 
-1.1.  BIER-PE and Traffic Engineering (BIER-TE)
-
-   BIER-PE is not a standalone, complete traffic engineering signaling
-   solution such as RSVP with RSVP-TE extensions ([RFC2205], [RFC3209]).
-   Instead it is a BIER derived architecture and forwarding plane that
-   allows to signal "source-routed" paths and replication points without
-   per-path, per-replication-point state on the transit nodes.  This
-   document introduces the name "Path Engineering" for bitstrings using
-   this semantic.  BIER-PE is therefore more similar to Segment Routing
-   (SR, ([RFC8402])) than RSVP-TE.  Note that SR does not provide
-   stateless replication point and receiver set signaling in its packet
-   header.  See Section 8 for a more detailled discussion of BIER-PE and
-   SR.
-
-   BIER-TE can be used alone in use cases not requiring bandwidth or
-   buffer resource reservations, such as high resilient services through
-   dual transmission with path diversity or optimization of network
-   capacity utilization through calculated paths/trees ("load balancing
-   across non-ECMP paths").  Due to its stateless BIER approach, BIER-PE
-   does not create per-flow/per-tree state on intermedia nodes.
-
-   BIER-PE can also be combined with bandwidth and buffer management
-   functions to support traffic engineering such as per-flow guaranteed
-   bandwidth and guaranteed latency across BIER-PE steered paths /
-
-
-
-Eckert, et al.           Expires August 27, 2020                [Page 4]
-
-Internet-Draft                BIER-PE ARCH                 February 2020
-
-
-   trees.  Combinations of BIER or BIER-PE with such per-tree/per-flow
-   resource guarantees are called BIER-TE.  The following paragraphs
-   summarize options and considerations.
-
-   In Section 2 below, the BIER-PE architecture specifies the BIER-PE
-   Controller as an entity calculating desired paths/trees based on the
-   desired policies.  A Path Computation Engine (PCE, see [RFC4655])
-   that can calculate the bitstring for BIER-TE is an instance of such a
-   BIER-PE Controller.  If the PCE can also perform resource management
-   such as per-flow bandwidth reservations and optional latency
-   guarantees, then it becomes a PCE for BIER-TE.
-
-   To support bandwidth guarantees in the forwarding plane, the ingres
-   BIER-TE node (BFIR) may need to have a per-flow policer if ingressed
-   traffic is not trusted to stay within its admitted traffic envelope.
-   This is a well understood policy function that can be deployed
-   without changes to BIER-PE.
-
-   If latency guarantees as required as for example by Guaranteed
-   Services ([RFC2212]), then additional per-hop latency control in the
-   forwarding plane can be required.  This can also be added to BIER-TE
-   deployments without changes to BIER-PE.  Per-hop stateless solutions
-   for this such as in [I-D.qiang-detnet-large-scale-detnet] would allow
-   to maintain the per-hop stateless design goal of BIER-PE and expand
-   it into BIER-TE.  Per-hop stateful solutions like per-flow, per-hop
-   shaping may also be beneficial given how BIER-PE eliminates the need
-   for per-flow, per-hop multicast replication and steering state.
-
-   Mechanisms how to combine BIER-PE or BIER with other mechanisms to
-   build BIER-TE are outside the scope of this document.  See
-   [I-D.eckert-teas-bier-te-framework].
-
-1.2.  Basic Examples
+1.1.  Basic Examples
 
    BIER-PE forwarding is best introduced with simple examples.
 
@@ -271,13 +221,7 @@ Internet-Draft                BIER-PE ARCH                 February 2020
 
 
 
-
-
-
-
-
-
-Eckert, et al.           Expires August 27, 2020                [Page 5]
+Eckert, et al.           Expires August 28, 2020                [Page 4]
 
 Internet-Draft                BIER-PE ARCH                 February 2020
 
@@ -333,7 +277,7 @@ Internet-Draft                BIER-PE ARCH                 February 2020
 
 
 
-Eckert, et al.           Expires August 27, 2020                [Page 6]
+Eckert, et al.           Expires August 28, 2020                [Page 5]
 
 Internet-Draft                BIER-PE ARCH                 February 2020
 
@@ -389,7 +333,7 @@ Internet-Draft                BIER-PE ARCH                 February 2020
 
 
 
-Eckert, et al.           Expires August 27, 2020                [Page 7]
+Eckert, et al.           Expires August 28, 2020                [Page 6]
 
 Internet-Draft                BIER-PE ARCH                 February 2020
 
@@ -430,7 +374,7 @@ Internet-Draft                BIER-PE ARCH                 February 2020
    BFR1 to BFR3,BFR4 and BFR6 can use (p1,p2,p3,p4,p5) or
    (p1,p2,p3,p4,p6), or via BFR6 (p2,p3,p4,p6,p7) or (p1.p3,p4,p5,p8).
 
-1.3.  BIER-PE Topology and adjacencies
+1.2.  BIER-PE Topology and adjacencies
 
    The key new component in BIER-PE to control where replication can or
    should happens and how to minimize the required BP for segments is -
@@ -445,7 +389,7 @@ Internet-Draft                BIER-PE ARCH                 February 2020
 
 
 
-Eckert, et al.           Expires August 27, 2020                [Page 8]
+Eckert, et al.           Expires August 28, 2020                [Page 7]
 
 Internet-Draft                BIER-PE ARCH                 February 2020
 
@@ -455,7 +399,7 @@ Internet-Draft                BIER-PE ARCH                 February 2020
    example.  This can be freely mixed with "overlay" BIER-PE, in
    "forward_routed" adjacencies are used.
 
-1.4.  Comparison with BIER
+1.3.  Comparison with BIER
 
    The key differences over BIER are:
 
@@ -486,7 +430,7 @@ Internet-Draft                BIER-PE ARCH                 February 2020
    be done through other mechanisms outside the scope of this document,
    as long as this is appropriately agreed upon between all BFIR/BFER.
 
-1.5.  Requirements Language
+1.4.  Requirements Language
 
    The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
    "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
@@ -501,7 +445,7 @@ Internet-Draft                BIER-PE ARCH                 February 2020
 
 
 
-Eckert, et al.           Expires August 27, 2020                [Page 9]
+Eckert, et al.           Expires August 28, 2020                [Page 8]
 
 Internet-Draft                BIER-PE ARCH                 February 2020
 
@@ -557,7 +501,7 @@ Internet-Draft                BIER-PE ARCH                 February 2020
 
 
 
-Eckert, et al.           Expires August 27, 2020               [Page 10]
+Eckert, et al.           Expires August 28, 2020                [Page 9]
 
 Internet-Draft                BIER-PE ARCH                 February 2020
 
@@ -613,7 +557,7 @@ Internet-Draft                BIER-PE ARCH                 February 2020
 
 
 
-Eckert, et al.           Expires August 27, 2020               [Page 11]
+Eckert, et al.           Expires August 28, 2020               [Page 10]
 
 Internet-Draft                BIER-PE ARCH                 February 2020
 
@@ -669,7 +613,7 @@ Internet-Draft                BIER-PE ARCH                 February 2020
 
 
 
-Eckert, et al.           Expires August 27, 2020               [Page 12]
+Eckert, et al.           Expires August 28, 2020               [Page 11]
 
 Internet-Draft                BIER-PE ARCH                 February 2020
 
@@ -725,7 +669,7 @@ Internet-Draft                BIER-PE ARCH                 February 2020
 
 
 
-Eckert, et al.           Expires August 27, 2020               [Page 13]
+Eckert, et al.           Expires August 28, 2020               [Page 12]
 
 Internet-Draft                BIER-PE ARCH                 February 2020
 
@@ -781,7 +725,7 @@ Internet-Draft                BIER-PE ARCH                 February 2020
 
 
 
-Eckert, et al.           Expires August 27, 2020               [Page 14]
+Eckert, et al.           Expires August 28, 2020               [Page 13]
 
 Internet-Draft                BIER-PE ARCH                 February 2020
 
@@ -837,7 +781,7 @@ Internet-Draft                BIER-PE ARCH                 February 2020
 
 
 
-Eckert, et al.           Expires August 27, 2020               [Page 15]
+Eckert, et al.           Expires August 28, 2020               [Page 14]
 
 Internet-Draft                BIER-PE ARCH                 February 2020
 
@@ -893,7 +837,7 @@ Internet-Draft                BIER-PE ARCH                 February 2020
 
 
 
-Eckert, et al.           Expires August 27, 2020               [Page 16]
+Eckert, et al.           Expires August 28, 2020               [Page 15]
 
 Internet-Draft                BIER-PE ARCH                 February 2020
 
@@ -949,7 +893,7 @@ Internet-Draft                BIER-PE ARCH                 February 2020
 
 
 
-Eckert, et al.           Expires August 27, 2020               [Page 17]
+Eckert, et al.           Expires August 28, 2020               [Page 16]
 
 Internet-Draft                BIER-PE ARCH                 February 2020
 
@@ -1005,7 +949,7 @@ Internet-Draft                BIER-PE ARCH                 February 2020
 
 
 
-Eckert, et al.           Expires August 27, 2020               [Page 18]
+Eckert, et al.           Expires August 28, 2020               [Page 17]
 
 Internet-Draft                BIER-PE ARCH                 February 2020
 
@@ -1061,7 +1005,7 @@ Internet-Draft                BIER-PE ARCH                 February 2020
 
 
 
-Eckert, et al.           Expires August 27, 2020               [Page 19]
+Eckert, et al.           Expires August 28, 2020               [Page 18]
 
 Internet-Draft                BIER-PE ARCH                 February 2020
 
@@ -1117,7 +1061,7 @@ Internet-Draft                BIER-PE ARCH                 February 2020
 
 
 
-Eckert, et al.           Expires August 27, 2020               [Page 20]
+Eckert, et al.           Expires August 28, 2020               [Page 19]
 
 Internet-Draft                BIER-PE ARCH                 February 2020
 
@@ -1173,7 +1117,7 @@ Internet-Draft                BIER-PE ARCH                 February 2020
 
 
 
-Eckert, et al.           Expires August 27, 2020               [Page 21]
+Eckert, et al.           Expires August 28, 2020               [Page 20]
 
 Internet-Draft                BIER-PE ARCH                 February 2020
 
@@ -1229,7 +1173,7 @@ Internet-Draft                BIER-PE ARCH                 February 2020
 
 
 
-Eckert, et al.           Expires August 27, 2020               [Page 22]
+Eckert, et al.           Expires August 28, 2020               [Page 21]
 
 Internet-Draft                BIER-PE ARCH                 February 2020
 
@@ -1285,7 +1229,7 @@ Internet-Draft                BIER-PE ARCH                 February 2020
 
 
 
-Eckert, et al.           Expires August 27, 2020               [Page 23]
+Eckert, et al.           Expires August 28, 2020               [Page 22]
 
 Internet-Draft                BIER-PE ARCH                 February 2020
 
@@ -1341,7 +1285,7 @@ Internet-Draft                BIER-PE ARCH                 February 2020
 
 
 
-Eckert, et al.           Expires August 27, 2020               [Page 24]
+Eckert, et al.           Expires August 28, 2020               [Page 23]
 
 Internet-Draft                BIER-PE ARCH                 February 2020
 
@@ -1397,7 +1341,7 @@ Internet-Draft                BIER-PE ARCH                 February 2020
 
 
 
-Eckert, et al.           Expires August 27, 2020               [Page 25]
+Eckert, et al.           Expires August 28, 2020               [Page 24]
 
 Internet-Draft                BIER-PE ARCH                 February 2020
 
@@ -1453,7 +1397,7 @@ Internet-Draft                BIER-PE ARCH                 February 2020
 
 
 
-Eckert, et al.           Expires August 27, 2020               [Page 26]
+Eckert, et al.           Expires August 28, 2020               [Page 25]
 
 Internet-Draft                BIER-PE ARCH                 February 2020
 
@@ -1509,7 +1453,7 @@ Internet-Draft                BIER-PE ARCH                 February 2020
 
 
 
-Eckert, et al.           Expires August 27, 2020               [Page 27]
+Eckert, et al.           Expires August 28, 2020               [Page 26]
 
 Internet-Draft                BIER-PE ARCH                 February 2020
 
@@ -1565,7 +1509,7 @@ Internet-Draft                BIER-PE ARCH                 February 2020
 
 
 
-Eckert, et al.           Expires August 27, 2020               [Page 28]
+Eckert, et al.           Expires August 28, 2020               [Page 27]
 
 Internet-Draft                BIER-PE ARCH                 February 2020
 
@@ -1621,7 +1565,7 @@ Internet-Draft                BIER-PE ARCH                 February 2020
 
 
 
-Eckert, et al.           Expires August 27, 2020               [Page 29]
+Eckert, et al.           Expires August 28, 2020               [Page 28]
 
 Internet-Draft                BIER-PE ARCH                 February 2020
 
@@ -1677,7 +1621,7 @@ Internet-Draft                BIER-PE ARCH                 February 2020
 
 
 
-Eckert, et al.           Expires August 27, 2020               [Page 30]
+Eckert, et al.           Expires August 28, 2020               [Page 29]
 
 Internet-Draft                BIER-PE ARCH                 February 2020
 
@@ -1733,7 +1677,7 @@ Internet-Draft                BIER-PE ARCH                 February 2020
 
 
 
-Eckert, et al.           Expires August 27, 2020               [Page 31]
+Eckert, et al.           Expires August 28, 2020               [Page 30]
 
 Internet-Draft                BIER-PE ARCH                 February 2020
 
@@ -1789,7 +1733,7 @@ Internet-Draft                BIER-PE ARCH                 February 2020
 
 
 
-Eckert, et al.           Expires August 27, 2020               [Page 32]
+Eckert, et al.           Expires August 28, 2020               [Page 31]
 
 Internet-Draft                BIER-PE ARCH                 February 2020
 
@@ -1811,14 +1755,14 @@ Internet-Draft                BIER-PE ARCH                 February 2020
    number of required bits by exploiting optimizations such as unicast
    (forward_route), ECMP or flood (DNR) over "uninteresting" sub-parts
    of the topology - e.g. parts where different trees do not need to
-   take different paths due to traffic engineering reasons.
+   take different paths due to path steering reasons.
 
    The total number of bits to describe the topology vs. the BFER in a
    BIFT:SI can range widely based on the size of the topology and the
    amount of alternative paths in it.  The higher the percentage, the
    higher the likelihood, that those topology bits are not just BIER-PE
    overhead without additional benefit, but instead that they will allow
-   to express desirable traffic engineering path alternatives.
+   to express desirable path steering alternatives.
 
 7.3.  Using BFR-id with BIER-PE
 
@@ -1845,7 +1789,7 @@ Internet-Draft                BIER-PE ARCH                 February 2020
 
 
 
-Eckert, et al.           Expires August 27, 2020               [Page 33]
+Eckert, et al.           Expires August 28, 2020               [Page 32]
 
 Internet-Draft                BIER-PE ARCH                 February 2020
 
@@ -1901,7 +1845,7 @@ Internet-Draft                BIER-PE ARCH                 February 2020
 
 
 
-Eckert, et al.           Expires August 27, 2020               [Page 34]
+Eckert, et al.           Expires August 28, 2020               [Page 33]
 
 Internet-Draft                BIER-PE ARCH                 February 2020
 
@@ -1957,7 +1901,7 @@ Internet-Draft                BIER-PE ARCH                 February 2020
 
 
 
-Eckert, et al.           Expires August 27, 2020               [Page 35]
+Eckert, et al.           Expires August 28, 2020               [Page 34]
 
 Internet-Draft                BIER-PE ARCH                 February 2020
 
@@ -2013,7 +1957,7 @@ Internet-Draft                BIER-PE ARCH                 February 2020
 
 
 
-Eckert, et al.           Expires August 27, 2020               [Page 36]
+Eckert, et al.           Expires August 28, 2020               [Page 35]
 
 Internet-Draft                BIER-PE ARCH                 February 2020
 
@@ -2069,7 +2013,7 @@ Internet-Draft                BIER-PE ARCH                 February 2020
 
 
 
-Eckert, et al.           Expires August 27, 2020               [Page 37]
+Eckert, et al.           Expires August 28, 2020               [Page 36]
 
 Internet-Draft                BIER-PE ARCH                 February 2020
 
@@ -2125,7 +2069,7 @@ Internet-Draft                BIER-PE ARCH                 February 2020
 
 
 
-Eckert, et al.           Expires August 27, 2020               [Page 38]
+Eckert, et al.           Expires August 28, 2020               [Page 37]
 
 Internet-Draft                BIER-PE ARCH                 February 2020
 
@@ -2137,8 +2081,8 @@ Internet-Draft                BIER-PE ARCH                 February 2020
 11.  Acknowledgements
 
    The authors would like to thank Greg Shepherd, Ijsbrand Wijnands,
-   Neale Ranns, Dirk Trossen, Sandy Zheng and Jeffrey Zhang for their
-   extensive review and suggestions.
+   Neale Ranns, Dirk Trossen, Sandy Zheng, Lou Berger and Jeffrey Zhang
+   for their reviews and suggestions.
 
 12.  Change log [RFC Editor: Please remove]
 
@@ -2147,9 +2091,15 @@ Internet-Draft                BIER-PE ARCH                 February 2020
       07: Further reworking text for Lou.
 
       Renamed BIER-TE to BIER-PE - Path Engineering.  "Path Engineering"
-      is a brand name for what BIER-PE does, its is better than just
+      is a new term for what BIER-PE does, its is better than just
       "steering", because each bit in a bitstring not only serves
       steering, but can also control replications.
+
+      Removed section 1.1 (introduced by version 06) because not
+      considered necessary in this doc by Lou (for framework doc).
+
+      Added [RFC editor pls. remove] Section to explain name change to
+      future reviewers.
 
       06: Concern by Lou Berger re.  BIER-TE as full traffic engineering
       solution.
@@ -2171,20 +2121,21 @@ Internet-Draft                BIER-PE ARCH                 February 2020
 
       Part 2:
 
+
+
+
+
+Eckert, et al.           Expires August 28, 2020               [Page 38]
+
+Internet-Draft                BIER-PE ARCH                 February 2020
+
+
       4.3 added note about leaf-BFER being also a propery of routing
       setup.
 
       4.7 Added missing details from example to avoid confusion with
       routed adjacencies, also compressed explanatory text and better
       justification why seed is explicitly configured by controller.
-
-
-
-
-Eckert, et al.           Expires August 27, 2020               [Page 39]
-
-Internet-Draft                BIER-PE ARCH                 February 2020
-
 
       4.9 added section discussing generic reuse of BP methods.
 
@@ -2226,21 +2177,21 @@ Internet-Draft                BIER-PE ARCH                 February 2020
       1.  Added mentioning of prior work for traffic engineered paths
       with bloom filters.
 
+
+
+
+
+Eckert, et al.           Expires August 28, 2020               [Page 39]
+
+Internet-Draft                BIER-PE ARCH                 February 2020
+
+
       2.  Changed title from layers to components and added "BIER-TE
       control plane" to "BIER-TE Controller" to make it clearer, what it
       does.
 
       2.2.3.  Added reference to I-D.ietf-bier-multicast-http-response
       as an example solution.
-
-
-
-
-
-Eckert, et al.           Expires August 27, 2020               [Page 40]
-
-Internet-Draft                BIER-PE ARCH                 February 2020
-
 
       2.3. clarified sentence about resetting BPs before sending copies
       (also forgot to mention DNR here).
@@ -2284,20 +2235,18 @@ Internet-Draft                BIER-PE ARCH                 February 2020
       better prepared for possible adoption by other WGs (e.g.  DetNet)
       or std. bodies.
 
+
+
+Eckert, et al.           Expires August 28, 2020               [Page 40]
+
+Internet-Draft                BIER-PE ARCH                 February 2020
+
+
       Requirement against the degree of existing implementations is self
       defined by the WG.  BIER WG seems to think it is not necessary to
       apply multiple interoperating implementations against an
       architecture level document at this time to make it qualify to go
       to standards track.  Also, the levels of support introduced in -01
-
-
-
-
-Eckert, et al.           Expires August 27, 2020               [Page 41]
-
-Internet-Draft                BIER-PE ARCH                 February 2020
-
-
       rev. should allow all BIER forwarding engines to also be able to
       support the base level BIER-TE forwarding.
 
@@ -2340,19 +2289,21 @@ Internet-Draft                BIER-PE ARCH                 February 2020
       04: Added comparison to Live-Live and BFIR to FRR section
       (Eckert).
 
+
+
+
+
+Eckert, et al.           Expires August 28, 2020               [Page 41]
+
+Internet-Draft                BIER-PE ARCH                 February 2020
+
+
       04: Removed FRR content into the new FRR draft [I-D.eckert-bier-
       te-frr] (Braun).
 
       - Linked FRR information to new draft in Overview/Introduction
 
       - Removed BTAFT/FRR from "Changes in the network topology"
-
-
-
-Eckert, et al.           Expires August 27, 2020               [Page 42]
-
-Internet-Draft                BIER-PE ARCH                 February 2020
-
 
       - Linked new draft in "Link/Node Failures and Recovery"
 
@@ -2396,19 +2347,19 @@ Internet-Draft                BIER-PE ARCH                 February 2020
       BIFT.  In BIER, each BIFT covers all SI.  This is now also how we
       define it in BIER-TE.
 
+
+
+Eckert, et al.           Expires August 28, 2020               [Page 42]
+
+Internet-Draft                BIER-PE ARCH                 February 2020
+
+
       02: Added Section 7 to explain the use of SI, subdomains and BFR-
       id in BIER-TE and to give an example how to efficiently assign
       bits for a large topology requiring multiple SI.
 
       02: Added further detailed for rings - how to support input from
       all ring nodes.
-
-
-
-Eckert, et al.           Expires August 27, 2020               [Page 43]
-
-Internet-Draft                BIER-PE ARCH                 February 2020
-
 
       01: Fixed BFIR -> BFER for section 4.3.
 
@@ -2436,12 +2387,6 @@ Internet-Draft                BIER-PE ARCH                 February 2020
 
 13.2.  Informative References
 
-   [I-D.eckert-teas-bier-te-framework]
-              Eckert, T., "Framework for Traffic Engineering with BIER-
-              TE forwarding (Bit Index Explicit Replication with Traffic
-              Engineering)", draft-eckert-teas-bier-te-framework-00
-              (work in progress), March 2018.
-
    [I-D.ietf-bier-multicast-http-response]
               Trossen, D., Rahman, A., Wang, C., and T. Eckert,
               "Applicability of BIER Multicast Overlay for Adaptive
@@ -2453,15 +2398,14 @@ Internet-Draft                BIER-PE ARCH                 February 2020
               "Constrained-Cast: Source-Routed Multicast for RPL",
               draft-ietf-roll-ccast-01 (work in progress), October 2017.
 
-   [I-D.qiang-detnet-large-scale-detnet]
-              Qiang, L., Geng, X., Liu, B., Eckert, T., Geng, L., and G.
-              Li, "Large-Scale Deterministic IP Network", draft-qiang-
-              detnet-large-scale-detnet-05 (work in progress), September
-              2019.
 
 
 
-Eckert, et al.           Expires August 27, 2020               [Page 44]
+
+
+
+
+Eckert, et al.           Expires August 28, 2020               [Page 43]
 
 Internet-Draft                BIER-PE ARCH                 February 2020
 
@@ -2478,31 +2422,6 @@ Internet-Draft                BIER-PE ARCH                 February 2020
               DOI 10.17487/RFC2119, March 1997,
               <https://www.rfc-editor.org/info/rfc2119>.
 
-   [RFC2205]  Braden, R., Ed., Zhang, L., Berson, S., Herzog, S., and S.
-              Jamin, "Resource ReSerVation Protocol (RSVP) -- Version 1
-              Functional Specification", RFC 2205, DOI 10.17487/RFC2205,
-              September 1997, <https://www.rfc-editor.org/info/rfc2205>.
-
-   [RFC2212]  Shenker, S., Partridge, C., and R. Guerin, "Specification
-              of Guaranteed Quality of Service", RFC 2212,
-              DOI 10.17487/RFC2212, September 1997,
-              <https://www.rfc-editor.org/info/rfc2212>.
-
-   [RFC3209]  Awduche, D., Berger, L., Gan, D., Li, T., Srinivasan, V.,
-              and G. Swallow, "RSVP-TE: Extensions to RSVP for LSP
-              Tunnels", RFC 3209, DOI 10.17487/RFC3209, December 2001,
-              <https://www.rfc-editor.org/info/rfc3209>.
-
-   [RFC4655]  Farrel, A., Vasseur, J., and J. Ash, "A Path Computation
-              Element (PCE)-Based Architecture", RFC 4655,
-              DOI 10.17487/RFC4655, August 2006,
-              <https://www.rfc-editor.org/info/rfc4655>.
-
-   [RFC8402]  Filsfils, C., Ed., Previdi, S., Ed., Ginsberg, L.,
-              Decraene, B., Litkowski, S., and R. Shakir, "Segment
-              Routing Architecture", RFC 8402, DOI 10.17487/RFC8402,
-              July 2018, <https://www.rfc-editor.org/info/rfc8402>.
-
 Authors' Addresses
 
    Toerless Eckert (editor)
@@ -2512,14 +2431,6 @@ Authors' Addresses
    USA
 
    Email: tte+ietf@cs.fau.de
-
-
-
-
-
-Eckert, et al.           Expires August 27, 2020               [Page 45]
-
-Internet-Draft                BIER-PE ARCH                 February 2020
 
 
    Gregory Cauchie
@@ -2550,27 +2461,4 @@ Internet-Draft                BIER-PE ARCH                 February 2020
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Eckert, et al.           Expires August 27, 2020               [Page 46]
+Eckert, et al.           Expires August 28, 2020               [Page 44]
