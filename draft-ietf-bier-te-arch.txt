@@ -154,7 +154,7 @@ Table of Contents
        3.2.2.  Forward Routed  . . . . . . . . . . . . . . . . . . .  16
        3.2.3.  ECMP  . . . . . . . . . . . . . . . . . . . . . . . .  16
        3.2.4.  Local Decap . . . . . . . . . . . . . . . . . . . . .  16
-     3.3.  Encapsulation considerations  . . . . . . . . . . . . . .  16
+     3.3.  Encapsulation considerations  . . . . . . . . . . . . . .  17
      3.4.  Basic BIER-TE Forwarding Example  . . . . . . . . . . . .  17
      3.5.  Forwarding comparison with BIER . . . . . . . . . . . . .  19
      3.6.  Requirements  . . . . . . . . . . . . . . . . . . . . . .  20
@@ -197,8 +197,8 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
    10. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  41
    11. Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .  41
    12. Change log [RFC Editor: Please remove]  . . . . . . . . . . .  41
-   13. References  . . . . . . . . . . . . . . . . . . . . . . . . .  46
-     13.1.  Normative References . . . . . . . . . . . . . . . . . .  46
+   13. References  . . . . . . . . . . . . . . . . . . . . . . . . .  47
+     13.1.  Normative References . . . . . . . . . . . . . . . . . .  47
      13.2.  Informative References . . . . . . . . . . . . . . . . .  47
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  48
 
@@ -693,7 +693,7 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 2.5.  Traffic Engineering Considerations
 
-   Traffic Engineering ([I-D.dt-teas-rfc3272bis]) provides performance
+   Traffic Engineering ([I-D.ietf-teas-rfc3272bis]) provides performance
    optimization of operational IP networks while utilizing network
    resources economically and reliably.  The key elements needed to
    effect TE are policy, path steering and resource management.  These
@@ -820,6 +820,10 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
    This is up to the BIER-TE Controller.  BPs for p2p links are one case
    (see below).
 
+   {VRF}indicates the Virtual Routing and Forwarding context into which
+   the BIER payload is to be delivered.  This is optional and depends on
+   the multicast flow overlay.
+
 3.2.  Adjacency Types
 
 3.2.1.  Forward Connected
@@ -829,11 +833,7 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
    interface.  A forward_connected adjacency does not route packets but
    only L2 forwards them to the neighbor.
 
-   Packets sent to an adjacency with "DoNotReset" (DNR) set in the BIFT
-   will not have the BitPosition for that adjacency reset when the BFR
-   creates a copy for it.  The BitPosition will still be reset for
-   copies of the packet made towards other adjacencies.  This can be
-   used for example in ring topologies as explained below.
+
 
 
 
@@ -841,6 +841,12 @@ Eckert, et al.           Expires April 17, 2021                [Page 15]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
+
+   Packets sent to an adjacency with "DoNotReset" (DNR) set in the BIFT
+   will not have the BitPosition for that adjacency reset when the BFR
+   creates a copy for it.  The BitPosition will still be reset for
+   copies of the packet made towards other adjacencies.  This can be
+   used for example in ring topologies as explained below.
 
 3.2.2.  Forward Routed
 
@@ -884,12 +890,6 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
    support routing or switching for NextProto to determine how to
    further process the packet.
 
-3.3.  Encapsulation considerations
-
-   Specifications for BIER-TE encapsulation are outside the scope of
-   this document.  This section gives explanations and guidelines.
-
-
 
 
 
@@ -897,6 +897,11 @@ Eckert, et al.           Expires April 17, 2021                [Page 16]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
+
+3.3.  Encapsulation considerations
+
+   Specifications for BIER-TE encapsulation are outside the scope of
+   this document.  This section gives explanations and guidelines.
 
    Because a BFR needs to interpret the BitString of a BIER-TE packet
    differently from a BIER packet, it is necessary to distinguish BIER
@@ -936,11 +941,6 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
    Step by step example of basic BIER-TE forwarding.  This does not use
    ECMP or forward_routed adjacencies nor does it try to minimize the
    number of required BitPositions for the topology.
-
-
-
-
-
 
 
 
@@ -2274,6 +2274,8 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
       potential to re-use BIER routing underlay routing protocol
       extensions for non-BFER related extensions.
 
+      3.1 Added explanation for VRF and its use in adjacencies.
+
       08: Incorporated (with hopefully acceptable fixes) for Lou
       suggested section 2.5, TE considerations.
 
@@ -2287,8 +2289,6 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
       07: Further reworking text for Lou.
 
-      Renamed BIER-PE to BIER-TE standing for "Tree Engineering" after
-      votes from BIER WG.
 
 
 
@@ -2297,6 +2297,9 @@ Eckert, et al.           Expires April 17, 2021                [Page 41]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
+
+      Renamed BIER-PE to BIER-TE standing for "Tree Engineering" after
+      votes from BIER WG.
 
       Removed section 1.1 (introduced by version 06) because not
       considered necessary in this doc by Lou (for framework doc).
@@ -2344,15 +2347,15 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
       Explicitly ue forwarded_connected adjcency in ECMP adjcency
       examples to avoid confusion.
 
-      4.3 Add picture as example for leav vs. non-leaf BFR in topology.
-      Improved description.
-
 
 
 Eckert, et al.           Expires April 17, 2021                [Page 42]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
+
+      4.3 Add picture as example for leav vs. non-leaf BFR in topology.
+      Improved description.
 
       4.5 Exampe for traffic that can be broadcast -> for single BP in
       hub&spoke.
@@ -2399,9 +2402,6 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
       redeeming value in this example given how -03 introduced section
       1.1 with basic examples.
 
-      many typos fixed.  Thanks a lot.
-
-      03: Last call textual changes by authors to improve readability:
 
 
 
@@ -2409,6 +2409,10 @@ Eckert, et al.           Expires April 17, 2021                [Page 43]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
+
+      many typos fixed.  Thanks a lot.
+
+      03: Last call textual changes by authors to improve readability:
 
       removed Wolfgang Braun as co-authors (as requested).
 
@@ -2454,10 +2458,6 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
       - reworked pseudocode section to have one pseudocode that mirrors
       the BIER forwarding pseudocode to make comparison easier and a
       second pseudocode that shows the complete set of BIER-TE
-      forwarding options and simplification/optimization possible vs.
-      BIER forwarding.  Removed MyBitsOfInterest (was pure
-      optimization).
-
 
 
 
@@ -2465,6 +2465,10 @@ Eckert, et al.           Expires April 17, 2021                [Page 44]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
+
+      forwarding options and simplification/optimization possible vs.
+      BIER forwarding.  Removed MyBitsOfInterest (was pure
+      optimization).
 
       - Added captions to pictures.
 
@@ -2509,10 +2513,6 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
       - removed FrrUpDown(..) and //FRR operations in
       ForwardBierTePacket(..)
 
-      - New draft contains FrrUpDown(..) and ForwardBierTePacket(Packet)
-      from bier-arch-03
-
-      - Moved "BIER-TE and existing FRR to new draft
 
 
 
@@ -2521,6 +2521,11 @@ Eckert, et al.           Expires April 17, 2021                [Page 45]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
+
+      - New draft contains FrrUpDown(..) and ForwardBierTePacket(Packet)
+      from bier-arch-03
+
+      - Moved "BIER-TE and existing FRR to new draft
 
       - Moved "BIER-TE and Segment Routing" section one level up
 
@@ -2561,6 +2566,18 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
       00: Initial version.
 
+
+
+
+
+
+
+
+Eckert, et al.           Expires April 17, 2021                [Page 46]
+
+Internet-Draft                BIER-TE ARCH                      Oct 2020
+
+
 13.  References
 
 13.1.  Normative References
@@ -2570,13 +2587,6 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
               Explicit Replication (BIER)", RFC 8279,
               DOI 10.17487/RFC8279, November 2017,
               <https://www.rfc-editor.org/info/rfc8279>.
-
-
-
-Eckert, et al.           Expires April 17, 2021                [Page 46]
-
-Internet-Draft                BIER-TE ARCH                      Oct 2020
-
 
    [RFC8296]  Wijnands, IJ., Ed., Rosen, E., Ed., Dolganow, A.,
               Tantsura, J., Aldrin, S., and I. Meilik, "Encapsulation
@@ -2589,11 +2599,6 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
    [Bloom70]  Bloom, B., "Space/time trade-offs in hash coding with
               allowable errors", Comm. ACM  13(7):422-6, July 1970.
 
-   [I-D.dt-teas-rfc3272bis]
-              Farrel, A., "Overview and Principles of Internet Traffic
-              Engineering", draft-dt-teas-rfc3272bis-11 (work in
-              progress), May 2020.
-
    [I-D.ietf-bier-multicast-http-response]
               Trossen, D., Rahman, A., Wang, C., and T. Eckert,
               "Applicability of BIER Multicast Overlay for Adaptive
@@ -2605,11 +2610,10 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
               "Constrained-Cast: Source-Routed Multicast for RPL",
               draft-ietf-roll-ccast-01 (work in progress), October 2017.
 
-   [I-D.qiang-detnet-large-scale-detnet]
-              Qiang, L., Geng, X., Liu, B., Eckert, T., Geng, L., and G.
-              Li, "Large-Scale Deterministic IP Network", draft-qiang-
-              detnet-large-scale-detnet-05 (work in progress), September
-              2019.
+   [I-D.ietf-teas-rfc3272bis]
+              Farrel, A., "Overview and Principles of Internet Traffic
+              Engineering", draft-ietf-teas-rfc3272bis-01 (work in
+              progress), July 2020.
 
    [ICC]      Reed, M., Al-Naday, M., Thomos, N., Trossen, D.,
               Petropoulos, G., and S. Spirou, "Stateless multicast
@@ -2622,10 +2626,6 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
               Disciplines",  Journal of High-Speed Networks, 1994, May
               1994, <https://dl.acm.org/doi/10.5555/2692227.2692232>.
 
-   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
-              Requirement Levels", BCP 14, RFC 2119,
-              DOI 10.17487/RFC2119, March 1997,
-              <https://www.rfc-editor.org/info/rfc2119>.
 
 
 
@@ -2633,6 +2633,11 @@ Eckert, et al.           Expires April 17, 2021                [Page 47]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
+
+   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", BCP 14, RFC 2119,
+              DOI 10.17487/RFC2119, March 1997,
+              <https://www.rfc-editor.org/info/rfc2119>.
 
 Authors' Addresses
 
@@ -2655,11 +2660,6 @@ Authors' Addresses
    University of Tuebingen
 
    Email: menth@uni-tuebingen.de
-
-
-
-
-
 
 
 

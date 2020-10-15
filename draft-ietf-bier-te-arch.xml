@@ -598,7 +598,7 @@ is considered to be part of the routing underlay in this document.</t>
 
     <section anchor="te-considerations" title="Traffic Engineering Considerations">
 
-<t>Traffic Engineering (<xref target="I-D.dt-teas-rfc3272bis"/>)
+<t>Traffic Engineering (<xref target="I-D.ietf-teas-rfc3272bis"/>)
 provides performance optimization of operational IP networks while utilizing
  network resources economically and
 reliably.  The key elements needed to effect TE are policy, path steering
@@ -700,6 +700,10 @@ specified in the BIER-TE Forwarding Procedures.</t>
 <t>Adjacencies for the same BP when populated in more than one BFR
 by the BIER-TE Controller does not have to have the same adjacencies. This is
 up to the BIER-TE Controller. BPs for p2p links are one case (see below).</t>
+
+<t>{VRF}indicates the Virtual Routing and Forwarding context into which
+the BIER payload is to be delivered. This is optional and depends
+on the multicast flow overlay.</t>
 
     </section>
     <!-- btft -->
@@ -1914,6 +1918,7 @@ for their distribution, so these are not attack vectors against BIER-TE.</t>
       <t>    1.1 Fixed numbering of example 1 topology explanation. Improved language on second example (less abbreviating to avoid confusion about meaning).</t>
       <t>    1.2 Improved explanation of BIER-TE topology, fixed terminology of graphs (BIER-TE topology is a directed graph where the edges are the adjacencies).</t>
       <t>    2.4 Fixed and amended routing underlay explanations: detailled why no need for BFER routing underlay routing protocol etensions, but potential to re-use BIER routing underlay routing protocol extensions for non-BFER related extensions.</t>
+      <t>    3.1 Added explanation for VRF and its use in adjacencies.</t>
       <t>08: Incorporated (with hopefully acceptable fixes) for Lou suggested section 2.5, TE considerations.</t>
       <t>    Fixes are primarily to the point to a) emphasize that BIER-TE does not depend on the routing underlay unless forward_routed adjacencies are used, and b) that the allocation and tracking of resources does not explicitly have to be tied to BPs, because they are just steering labels. Instead, it would ideally come from per-hop resource management that can be maintained only via local accounting in the controller.</t>
       <t>07: Further reworking text for Lou.</t>
@@ -2026,9 +2031,9 @@ for their distribution, so these are not attack vectors against BIER-TE.</t>
       &RFC4655;
       &RFC8402;
       <?rfc include="reference.I-D.eckert-teas-bier-te-framework"?>
--->
       <?rfc include="reference.I-D.qiang-detnet-large-scale-detnet"?>
-      <?rfc include="reference.I-D.dt-teas-rfc3272bis"?>
+-->
+      <?rfc include="reference.I-D.ietf-teas-rfc3272bis"?>
       <?rfc include="reference.I-D.ietf-bier-multicast-http-response"?>
       <?rfc include="reference.I-D.ietf-roll-ccast"?>
       <reference anchor="ICC" target="https://ieeexplore.ieee.org/document/7511036">
