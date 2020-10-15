@@ -45,7 +45,7 @@
 <!-- Change to "yes" if someone has disclosed IPR for the draft -->
 <!-- end of list of popular I-D processing instructions -->
 
-<rfc ipr="trust200902" docName="draft-ietf-bier-te-arch-08" category="std">
+<rfc ipr="trust200902" docName="draft-ietf-bier-te-arch-09" category="std">
         <front>
                 <title abbrev="BIER-TE ARCH">Tree Engineering for Bit Index Explicit Replication (BIER-TE)</title>
                 <author role="editor" fullname="Toerless Eckert" initials="T.T.E." surname="Eckert">
@@ -72,7 +72,7 @@
                                 <email>menth@uni-tuebingen.de</email>
                         </address>
                 </author>
-                <date month="July" year="2020"/>
+                <date month="Oct" year="2020"/>
                 <abstract>
 <t>
 This memo introduces per-packet stateless strict and loose path
@@ -150,12 +150,12 @@ This is detailed further below.
 </t>
 
 <t>Note that related work, <xref target="I-D.ietf-roll-ccast"/>
-uses bloom filters to represent leaves or edges of the intended delivery tree.  Bloom filters
+uses Bloom filters <xref target="Bloom70"/> to represent leaves or edges of the intended delivery tree.  Bloom filters
 in general can support larger trees/topologies with fewer addressing bits than explicit bitstrings,
 but they introduce the heuristic risk of false positives and cannot reset bits in
 the bitstring during forwarding to avoid loops. For these reasons, BIER-TE 
 uses explicit bitstrings like BIER. The explicit bitstrings of BIER-TE can also
-be seen as a special type of bloom filter, and this is how related work <xref target="ICC"/>
+be seen as a special type of Bloom filter, and this is how related work <xref target="ICC"/>
 describes it.</t>
 
 <!--  Removed for now by review with Lou Berger
@@ -280,8 +280,8 @@ the packet.
 </t>
 
 <t>If instead the bitstring was (p2,p6,p8,p10,p12,p13), the packet
-would be copied by BFR5 towards BFR3 because p6 instead of BFR2 to BFR5
-because of p6 in the prior case. This is showing the ability of the shown
+would be copied by BFR5 towards BFR3 because of p6 instead of being copied by 
+BFR2 to BFR3 because of p5 in the prior case. This is showing the ability of the shown
 BIER-TE Topology to make the traffic pass across any possible path and be
 replicated where desired.
 </t>
@@ -336,24 +336,28 @@ BIER-TE Topology:
 
 <t>To send a BIER-TE packet from BFR1 via BFR3 to BFR6,
 the bitstring is (p1,p5). From BFR1 via BFR4 to BFR6
-it is (p2,p6). A packet from BFR1 to BFR3,BFR4 and BFR6
-can use (p1,p2,p3,p4,p5) or (p1,p2,p3,p4,p6), or via
-BFR6 (p2,p3,p4,p6,p7) or (p1.p3,p4,p5,p8).</t>
+it is (p2,p6). A packet from BFR1 to BFR3,BFR4 and from BFR3
+to BFR6 uses (p1,p2,p3,p4,p5). A packet from BFR1 to BFR3,BFR4 and
+from BFR4 to BFR uses (p1,p2,p3,p4,p6). A packet from BFR1 to BFR4, 
+and from BFR4 to BFR6 and from BFR6  to BFR3 uses (p2,p3,p4,p6,p7).
+A packet from BFR1 to BFR3, and from BFR3 to BFR6 and from BFR6 to BFR4
+uses (p1,p3,p4,p5,p8).</t>
 
   </section>
 
   <section anchor="topology" title="BIER-TE Topology and adjacencies">
 
-<t>The key new component in BIER-TE to control where replication
-can or should happens and how to minimize the required BP for
-segments is - as shown in these two examples - the BIER-TE topology.
+<t>The key new component in BIER-TE compared to BIER is the BIER-TE topology
+as introduced through the two examples in <xref target="examples"/>.
+It is used  to control where replication can or should happen and how to
+minimize the required number of BP for adjacencies.
 </t>
 
 <t>
 The BIER-TE Topology consists of the BIFT of all the BFR and
-can also be expressed in a diagram as a graph where the edges are the adjacencies 
-between the BFR. Adjacencies are naturally unidirectional.
-BP can be reused across multiple adjacencies as long as this does not
+can also be expressed as a directed graph where the edges are the adjacencies 
+between the BFR labelled with the BP used for the adjacency. Adjacencies are
+naturally unidirectional.  BP can be reused across multiple adjacencies as long as this does not
 lead to undesired duplicates or loops as explained further down in the
 text.
 </t>
@@ -374,7 +378,7 @@ are used.</t>
 <t><list style="symbols">
 
 <t> BIER-TE replaces in-network autonomous path calculation by explicit
-paths calculated off-path by the BIER-TE Controller. </t>
+paths calculated by the BIER-TE Controller. </t>
 
 <t> In BIER-TE every BitPosition of the BitString of a BIER-TE packet
 indicates one or more adjacencies - instead of a BFER as
@@ -562,11 +566,26 @@ indicates "DoNotReset" (DNR, see <xref target="forward-connected"/>). This is do
 
     <section anchor="routing-underlay" title="The Routing Underlay">
 
-<t>BIER-TE is sending BIER packets to directly connected
+<t>For forward_connected adjacencies, BIER-TE is sending BIER packets to directly connected
 BIER-TE neighbors as L2 (unicasted) BIER packets without requiring a
-routing underlay. BIER-TE forwarding uses the Routing underlay for
-forward_routed adjacencies which copy BIER-TE packets to not-directly-connected
-BFRs (see below for adjacency definitions).
+routing underlay. For forward_routed adjacencies, BIER-TE forwarding encapsulates
+a copy of the BIER packet so that it can be delivered by the forwarding plane
+of the routing underlay to the routable destination address indicated in the adjacency.
+See <xref target="forward-routed"/> for the adjacency definition.</t>
+
+<t>BIER relies on the routing underlay to calculate paths towards BFER and derive
+next-hop BFR adjacencies for those paths. This commonly relies on BIER specific extensions
+to the routing protocols of the routing underlay but may also be established
+by a controller. In BIER-TE, the next-hops of a packet are determined by the bitstring
+through the BIER-TE Controller established adjacencies on the BFR for the BPs of the bitsring.
+There is thus no need for BFER specific routing underlay extensions to forward BIER packets with
+BIER-TE semantics.</t>
+
+<t>BIER encapsulations may have BFER independent extensions in the routing underlay,
+such as the label range for BIER packets in the BIER over MPLS encapsulation (<xref target="RFC8296"/>).
+These BIER specific functions of the routing underlay are equally useable by BIER-TE.
+Alternatively, these encapsulation parameters can be provisioned by the BIER-TE controller into 
+the forward_connected or forward_routed adjacencies directly without relying on a routing underlay.
 </t>
 
 <t>If the BFR intends to support FRR for BIER-TE, then the BIER-TE
@@ -597,13 +616,15 @@ document.</t>
 used in BIER-TE are composed based on policy and resource management
 considerations.  When composing BIER-TE BitStrings, a Controller MUST take
 into account the resources available at each BFR and for each BP
-when it is providing congestion loss free services such as for 
-Rate Controlled Service Disciplines (RCSD).  Resource availability 
+when it is providing congestion loss free services such as 
+Rate Controlled Service Disciplines <xref target="RCSD94"/>.  Resource availability 
 could be provided for example via routing protocol information, but
-may also be obtained via a BIER-TE control protocol.  The
+may also be obtained via a BIER-TE control protocol such as Netconf or
+any other protocol commonly used by a PCE to understand the resources
+of the network it operates on.  The
 resource usage of the BIER-TE traffic admitted by the BIER-TE controller
 can be solely tracked on the BIER-TE Controller based on local accounting
-as long as no forward_routed adjacencies are used (see below for definition
+as long as no forward_routed adjacencies are used (see <xref target="forward-connected"/> for the definition
 of forward_routed adjacencies).  When forward_routed adjacencies are used,
 the paths selected by the underlying routing protocol need to be tracked as well.</t>
 
@@ -779,8 +800,8 @@ BIER-TE forwarding.</t>
 to a specific interface address on a target BFR. With MPLS encapsulation, this can
 simply be done via a label stack with that addresses label as the top label - followed
 by the label assigned to (SI,subdomain) - and if necessary (see above) BIER-TE.
-With non-MPLS encapsulation, some form of IP tunneling (IP in IP, LISP, GRE) would
- be required.</t>
+With non-MPLS encapsulation, some form of IP encapsulation would be required (for example IP/GRE).
+</t>
 
 <t>The encapsulation used for "forward_routed" adjacencies can equally support
 existing advanced adjacency information such as "loose source routes" via e.g. MPLS
@@ -1236,7 +1257,7 @@ pass across both of them. Therefore, they can also use the same BP 0:7.</t>
 
 <t>Note that ECMP solutions outside of BIER often hide the
 seed by auto-selecting it from local entropy such as unique local or
-next-hop identifiers.  The solutions choosen for BIER-TE to allow the BIER-TE Controller
+next-hop identifiers.  The solutions chosen for BIER-TE to allow the BIER-TE Controller
 to explicitly set the seed maximizes the ability of the BIER-TE Controller to choose the seed,
 independent of such seed source that the BIER-TE Controller may not be able to control
 well, and even calculate optimized seeds for multi-hop cases.</t>
@@ -1374,7 +1395,7 @@ neighbor requires a forward_connected BP and every BFER requires a local_decap B
   </section>
   <!-- bitpositions -->
 
-  <section anchor="avoiding" title="Avoiding loops and duplicates">
+  <section anchor="avoiding" title="Avoiding duplicates and loops">
 
       <section anchor="loops" title="Loops">
 
@@ -1888,6 +1909,11 @@ for their distribution, so these are not attack vectors against BIER-TE.</t>
   <section anchor="changes" title="Change log [RFC Editor: Please remove]">
   <t>draft-ietf-bier-te-arch:
     <list>
+      <t>09: Incorporated fixes for feedback from Shepherd (Xuesong Geng).</t>
+      <t>    Added references for Bloom Filders and Rate Controlled Service Disciplines.</t>
+      <t>    1.1 Fixed numbering of example 1 topology explanation. Improved language on second example (less abbreviating to avoid confusion about meaning).</t>
+      <t>    1.2 Improved explanation of BIER-TE topology, fixed terminology of graphs (BIER-TE topology is a directed graph where the edges are the adjacencies).</t>
+      <t>    2.4 Fixed and amended routing underlay explanations: detailled why no need for BFER routing underlay routing protocol etensions, but potential to re-use BIER routing underlay routing protocol extensions for non-BFER related extensions.</t>
       <t>08: Incorporated (with hopefully acceptable fixes) for Lou suggested section 2.5, TE considerations.</t>
       <t>    Fixes are primarily to the point to a) emphasize that BIER-TE does not depend on the routing underlay unless forward_routed adjacencies are used, and b) that the allocation and tracking of resources does not explicitly have to be tied to BPs, because they are just steering labels. Instead, it would ideally come from per-hop resource management that can be maintained only via local accounting in the controller.</t>
       <t>07: Further reworking text for Lou.</t>
@@ -2019,6 +2045,31 @@ for their distribution, so these are not attack vectors against BIER-TE.</t>
           <date month="May" year="2016"/>
         </front>
         <seriesInfo name="" value="IEEE International Conference on Communications (ICC), Kuala Lumpur, Malaysia, 2016"/>
+      </reference>
+
+      <reference anchor="RCSD94" target="https://dl.acm.org/doi/10.5555/2692227.2692232">
+        <front>
+          <title>
+            Rate-Controlled Service Disciplines
+          </title>
+            <author initials="H." surname="Zhang"/>
+            <author initials="D." surname="Domenico"/>
+          <date month="May" year="1994"/>
+        </front>
+        <seriesInfo name="" value="Journal of High-Speed Networks, 1994"/>
+      </reference>
+
+
+      <reference anchor="Bloom70">
+        <front>
+          <title>Space/time trade-offs in hash coding with allowable errors</title>
+          <author initials="B. H." surname="Bloom" fullname="Burton H. Bloom">
+            <organization/>
+          </author>
+          <date month="July" year="1970"/>
+        </front>
+        <seriesInfo name="Comm. ACM " value="13(7):422-6"/>
+        <format type="PDF" target="http://gnunet.org/papers/p422-bloom.pdf"/>
       </reference>
 
       <!-- TODO change reference below as soon as its available from tool chain-->
