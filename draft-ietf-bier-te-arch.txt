@@ -5,10 +5,10 @@
 Network Working Group                                     T. Eckert, Ed.
 Internet-Draft                                                 Futurewei
 Intended status: Standards Track                              G. Cauchie
-Expires: April 17, 2021                                 Bouygues Telecom
+Expires: May 3, 2021                                    Bouygues Telecom
                                                                 M. Menth
                                                  University of Tuebingen
-                                                            Oct 14, 2020
+                                                            Oct 30, 2020
 
 
      Tree Engineering for Bit Index Explicit Replication (BIER-TE)
@@ -53,7 +53,7 @@ Abstract
 
 
 
-Eckert, et al.           Expires April 17, 2021                 [Page 1]
+Eckert, et al.             Expires May 3, 2021                  [Page 1]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
@@ -101,7 +101,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on April 17, 2021.
+   This Internet-Draft will expire on May 3, 2021.
 
 
 
@@ -109,7 +109,7 @@ Status of This Memo
 
 
 
-Eckert, et al.           Expires April 17, 2021                 [Page 2]
+Eckert, et al.             Expires May 3, 2021                  [Page 2]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
@@ -165,7 +165,7 @@ Table of Contents
 
 
 
-Eckert, et al.           Expires April 17, 2021                 [Page 3]
+Eckert, et al.             Expires May 3, 2021                  [Page 3]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
@@ -221,7 +221,7 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.           Expires April 17, 2021                 [Page 4]
+Eckert, et al.             Expires May 3, 2021                  [Page 4]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
@@ -277,7 +277,7 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.           Expires April 17, 2021                 [Page 5]
+Eckert, et al.             Expires May 3, 2021                  [Page 5]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
@@ -333,7 +333,7 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.           Expires April 17, 2021                 [Page 6]
+Eckert, et al.             Expires May 3, 2021                  [Page 6]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
@@ -389,7 +389,7 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.           Expires April 17, 2021                 [Page 7]
+Eckert, et al.             Expires May 3, 2021                  [Page 7]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
@@ -445,7 +445,7 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.           Expires April 17, 2021                 [Page 8]
+Eckert, et al.             Expires May 3, 2021                  [Page 8]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
@@ -501,7 +501,7 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.           Expires April 17, 2021                 [Page 9]
+Eckert, et al.             Expires May 3, 2021                  [Page 9]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
@@ -557,7 +557,7 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.           Expires April 17, 2021                [Page 10]
+Eckert, et al.             Expires May 3, 2021                 [Page 10]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
@@ -613,7 +613,7 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.           Expires April 17, 2021                [Page 11]
+Eckert, et al.             Expires May 3, 2021                 [Page 11]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
@@ -669,7 +669,7 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.           Expires April 17, 2021                [Page 12]
+Eckert, et al.             Expires May 3, 2021                 [Page 12]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
@@ -725,7 +725,7 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.           Expires April 17, 2021                [Page 13]
+Eckert, et al.             Expires May 3, 2021                 [Page 13]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
@@ -781,7 +781,7 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.           Expires April 17, 2021                [Page 14]
+Eckert, et al.             Expires May 3, 2021                 [Page 14]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
@@ -837,7 +837,7 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.           Expires April 17, 2021                [Page 15]
+Eckert, et al.             Expires May 3, 2021                 [Page 15]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
@@ -893,7 +893,7 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.           Expires April 17, 2021                [Page 16]
+Eckert, et al.             Expires May 3, 2021                 [Page 16]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
@@ -949,7 +949,7 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.           Expires April 17, 2021                [Page 17]
+Eckert, et al.             Expires May 3, 2021                 [Page 17]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
@@ -1005,7 +1005,7 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.           Expires April 17, 2021                [Page 18]
+Eckert, et al.             Expires May 3, 2021                 [Page 18]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
@@ -1061,7 +1061,7 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.           Expires April 17, 2021                [Page 19]
+Eckert, et al.             Expires May 3, 2021                 [Page 19]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
@@ -1117,7 +1117,7 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.           Expires April 17, 2021                [Page 20]
+Eckert, et al.             Expires May 3, 2021                 [Page 20]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
@@ -1173,7 +1173,7 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.           Expires April 17, 2021                [Page 21]
+Eckert, et al.             Expires May 3, 2021                 [Page 21]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
@@ -1229,7 +1229,7 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.           Expires April 17, 2021                [Page 22]
+Eckert, et al.             Expires May 3, 2021                 [Page 22]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
@@ -1285,7 +1285,7 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.           Expires April 17, 2021                [Page 23]
+Eckert, et al.             Expires May 3, 2021                 [Page 23]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
@@ -1341,7 +1341,7 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.           Expires April 17, 2021                [Page 24]
+Eckert, et al.             Expires May 3, 2021                 [Page 24]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
@@ -1397,7 +1397,7 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.           Expires April 17, 2021                [Page 25]
+Eckert, et al.             Expires May 3, 2021                 [Page 25]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
@@ -1453,7 +1453,7 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.           Expires April 17, 2021                [Page 26]
+Eckert, et al.             Expires May 3, 2021                 [Page 26]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
@@ -1509,7 +1509,7 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.           Expires April 17, 2021                [Page 27]
+Eckert, et al.             Expires May 3, 2021                 [Page 27]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
@@ -1565,7 +1565,7 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.           Expires April 17, 2021                [Page 28]
+Eckert, et al.             Expires May 3, 2021                 [Page 28]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
@@ -1621,7 +1621,7 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.           Expires April 17, 2021                [Page 29]
+Eckert, et al.             Expires May 3, 2021                 [Page 29]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
@@ -1677,7 +1677,7 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.           Expires April 17, 2021                [Page 30]
+Eckert, et al.             Expires May 3, 2021                 [Page 30]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
@@ -1733,7 +1733,7 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.           Expires April 17, 2021                [Page 31]
+Eckert, et al.             Expires May 3, 2021                 [Page 31]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
@@ -1789,7 +1789,7 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.           Expires April 17, 2021                [Page 32]
+Eckert, et al.             Expires May 3, 2021                 [Page 32]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
@@ -1845,7 +1845,7 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.           Expires April 17, 2021                [Page 33]
+Eckert, et al.             Expires May 3, 2021                 [Page 33]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
@@ -1901,7 +1901,7 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.           Expires April 17, 2021                [Page 34]
+Eckert, et al.             Expires May 3, 2021                 [Page 34]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
@@ -1957,7 +1957,7 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.           Expires April 17, 2021                [Page 35]
+Eckert, et al.             Expires May 3, 2021                 [Page 35]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
@@ -2013,7 +2013,7 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.           Expires April 17, 2021                [Page 36]
+Eckert, et al.             Expires May 3, 2021                 [Page 36]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
@@ -2069,7 +2069,7 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.           Expires April 17, 2021                [Page 37]
+Eckert, et al.             Expires May 3, 2021                 [Page 37]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
@@ -2125,7 +2125,7 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.           Expires April 17, 2021                [Page 38]
+Eckert, et al.             Expires May 3, 2021                 [Page 38]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
@@ -2181,7 +2181,7 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.           Expires April 17, 2021                [Page 39]
+Eckert, et al.             Expires May 3, 2021                 [Page 39]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
@@ -2237,7 +2237,7 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.           Expires April 17, 2021                [Page 40]
+Eckert, et al.             Expires May 3, 2021                 [Page 40]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
@@ -2293,7 +2293,7 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.           Expires April 17, 2021                [Page 41]
+Eckert, et al.             Expires May 3, 2021                 [Page 41]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
@@ -2349,7 +2349,7 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.           Expires April 17, 2021                [Page 42]
+Eckert, et al.             Expires May 3, 2021                 [Page 42]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
@@ -2405,7 +2405,7 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.           Expires April 17, 2021                [Page 43]
+Eckert, et al.             Expires May 3, 2021                 [Page 43]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
@@ -2461,7 +2461,7 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.           Expires April 17, 2021                [Page 44]
+Eckert, et al.             Expires May 3, 2021                 [Page 44]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
@@ -2517,7 +2517,7 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.           Expires April 17, 2021                [Page 45]
+Eckert, et al.             Expires May 3, 2021                 [Page 45]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
@@ -2573,7 +2573,7 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.           Expires April 17, 2021                [Page 46]
+Eckert, et al.             Expires May 3, 2021                 [Page 46]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
@@ -2629,7 +2629,7 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.           Expires April 17, 2021                [Page 47]
+Eckert, et al.             Expires May 3, 2021                 [Page 47]
 
 Internet-Draft                BIER-TE ARCH                      Oct 2020
 
@@ -2685,4 +2685,4 @@ Authors' Addresses
 
 
 
-Eckert, et al.           Expires April 17, 2021                [Page 48]
+Eckert, et al.             Expires May 3, 2021                 [Page 48]
