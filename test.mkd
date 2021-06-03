@@ -1,0 +1,256 @@
+---
+coding: utf-8
+
+title: Use of an MPLS LSE as an Ancillary Data Pointer
+abbrev: MPLS-Dev-Primer
+docname: draft-bryant-mpls-md-pointer
+wg: MPLS
+category: std
+
+stand_alone: yes
+pi: [toc, sortrefs, symrefs, comments]
+
+author:
+  -
+       ins: S. Bryant
+       name: Stewart Bryant
+       org: Futurewei Technologies, Inc.
+       email: sb@stewartbryant.com
+  -
+       ins: A. Clemm
+       name: Alexander Clemm
+       org: Futurewei Technologies, Inc.
+       email: ludwig@clemm.org
+
+normative:
+  RFC3032:
+  RFC9017:
+
+informative:
+  I-D.kompella-mpls-mspl4fa:
+
+
+--- abstract
+
+The purpose of this memo is to describe how label stack entries (LSEs) can
+be used to point to ancillary or meta-data carried below the MPLS label stack.
+
+--- middle
+
+# Introduction
+
+There has been significant recent interest in developing the  MPLS data plane to
+address new needs, and in particular to carry ancillary or meta-data below
+the stack. There has also been recent interest in carrying additional flags
+or other indicators to qualify the forwarding operations.
+
+This memo proposes the use of "spare" bits in an SPL or pseudo-SPL
+be used as a pointer to items of ancillary data carried  below the bottom of stack (BoS).
+
+# Background Documents
+
+{{I-D.kompella-mpls-mspl4fa}} notes that the forwarder does not need
+to use the TC, or TTL fields in an LSE that does not become top of
+stack. It proposes to exploit these fields as indicators
+of forwarding actions, by modifying the semantics of these fields.
+
+There are a number of key proposals in the draft:
+
++ Using the "spare bits" as forwarding indicator flags to
+specify actions or in some cases inactions
++ Using the method to multi-purpose SPLs and thus expand the
+number of single label SPLs available to the IETF.
++ Reusing the Entropy Label fields to carry additional
+data needed by the forwarder. This latter point could be adopted by
+any eSPL. One use for this additional data that was proposed
+(certainly in discussion but I cannot see it in the draft) was the
+use of this facility to carry a network slice identifier.
+
+This draft proposes that these "spare" bits in an SPL or pseudo-SPL be
+used as a pointer to ancillary data below the stack.
+
+# Use of SPLs as Pointers
+
+Instead of using the "spare" bits in an SPL that is not ToS as a bit
+field or as an enumerator of a slice as previously proposed there
+would appear to be advantage in using them as a pointer to the
+ancillary data below the BoS.
+
+The advantages of doing this are:
+
++ Ability to find this information without scanning the stack for an indicator
++ Ability to know if the ancillary data is present even if it is unreachable
++ Ability to know if this data is critical to the forwarding or the packet but unreachable
++ Ability to specify which ancillary data is applicable at the hop being processed.
+
+This concept is illustrated in {{FIG-mpls-ptr}}.
+
+         +-------------------------+
+      L1 |      Top of Stack       |
+         +-------------------------+
+      L2 |      Pointer SPL        |-----+
+         +-------------------------+     |
+         |                         |     |
+         .                         .     |
+         .                         .     |
+         |                         |     |
+         +-------------------------+     |
+         |      Bottom of Stack    |     |
+       ===============================   |
+         |      Ancillary Data     |     |
+         .                         .     |
+         .                         .<----+
+         |                         |     
+         +-------------------------+
+{: #FIG-mpls-ptr title="Use of In-stack MPLS pointer"}
+    
+The top of stack label (L1) and Pointer SPL (L2), which ideally is a true SPL form a tuple
+with the semantic "process the action that the FEC of the ToS label specifies with the 
+assistance of the information pointed to by the following SPL".
+
+When the forwarder processes the ToS, if it is configured to do so it looks
+at the following LSE. If that is not the pointer SPL forwarding is performed as
+normal. If the following label is a pointer SPL it used the information pointed to
+by the pointer SPL as assistance in the forwarding operation.
+
+Note that Whilst the pointer can be simply a pointer to the end of the stack which
+aligns with the other proposals being made, it can actually point a specific
+item with the label stack payload. This means that different LSE can point to different
+ancillary data components.
+
+In this mode of operation a swap operation proceeds as normally for MPLS. A push
+operation proceeds as normal, but unless a ToS pointer SPL tuple is pushed the feature
+provided by the ancillary data is lost. A pop operation requires that both the ToS
+LSE and the pointer SPL are poped as a pair.
+
+If the LSP includes a legacy node that does not understand the pointer SPL
+it will forward based on the FEC of the ToS alone omitting the feature. If that
+feature absence is a problem care needs to be taken to constrain the LSP to
+a path that includes support for the pointer SPL and the associated ancillary data at
+every hop.
+
+# Use of Multiple Pointers
+
+A pointer mechanism in the MPLS label stack can be further
+advantage in using multiple pointers to express two (or more) sets of ancillary data,
+for example a latency object and an iOAM object. An example is shown in {{FIG-mpls-multi-ptr}}.
+
+         +-------------------------+
+      L1 |      Top of Stack       |
+         +-------------------------+
+      L2 |      Pointer SPL        |-----+
+         +-------------------------+     |
+      L3 |      Pointer SPL        |-----|---+
+         +-------------------------+     |   |
+         |                         |     |   |
+         .                         .     |   |
+         .                         .     |   |
+         |                         |     |   |
+         +-------------------------+     |   |
+         |      Bottom of Stack    |     |   |
+       ===============================   |   |
+         |      Ancillary Data     |     |   |
+         .                         .     |   |
+         .                         .<----+   |
+         .                         .         |
+         .                         .<--------+
+         |                         |     
+         +-------------------------+
+{: #FIG-mpls-multi-ptr title="Use of Multiple In-stack MPLS Pointers"}
+
+As in {{FIG-mpls-ptr}} the top three labels are a tuple that in this
+case have the semantics "process the action that the FEC of the ToS 
+label specifies with the assistance of the information pointed to by the following SPLs",
+in this case the label set L1, L2, L3. The tuple terminates when either an
+"ordinary" label, an SPL that is not a pointer SPL, or a label with the S bit set
+is encountered.
+
+# CONTROVERSY ALERT - Use Of Ordinary Labels
+
+Given the restricted number of Base SPLs {{RFC9017}} it is
+interesting to consider whether we might use an ordinary label for this purpose.
+
+The label becomes a run-time constant that the forwarder needs to check during the
+parsing of the label stack. This is a 20 bit compare of a run-time constant.
+This is simple for a software or microcoded forwarder but needs a
+programmable register in a fully hardware based forwarder. Clearly it is
+necessary to check the restrictions on the deployed hardware, but this
+certainly seems feasible.
+
+If  an ordinary label were assigned to this purpose from the 16-104857516
+label set, there are two cases to consider: LSRs that have the capability
+of associating a FEC with a label of this value and LSRs that do not.
+
+If an LSR has the capability to allocate a FEC with the chosen value it is necessary
+to preallocate this label before the any MPLS application took the value.
+That may impact a number of MPLS applications, but again it seems feasible.
+
+An LSR that does not have the capability to allocate a FEC with this value
+simply has the issue of adapting the forwarding behavior.
+
+The matter of choosing a suitable value and distributing it is outside the
+scope of this memo, but is something that is routinely done in the routing system
+so is not a factor in assessing feasibility.
+
+Clearly the LSP needs to be constructed so as to avoid any LSR that is unable to
+process a packet with one of these sequestered ordinary labels, but that is
+no different to the case where an SPL is used.
+
+The final consideration is what happens if the label every becomes ToS. For this to
+happen the packet must have been incorrectly processed, and that is no different
+from any other case of a misprocessed MPLS packet.
+
+# Disposition of the Ancillary Data
+
+The ancillary data must be removed before the payload is passed out of the MPLS
+domain. There are three methods whereby the egress PE can know of the presence of the
+ancillary data:
+
++ The FEC of the BoS LSE can indicate the need to do this in a manner similar to pseudowires or MPLS VPN.
++ The BoS LSE can be a special purpose label indicating the presence of the ancillary data.
++ The BOS LSE can point to an item of ancillary data that describes the disposition of the ancillary data.
+
+The removal of the ancillary data may be relatively complex depending on its purpose, i.e. it
+may be more complex than removing some number of bytes, for example,  if it is
+carrying latency or iOAM information.
+
+
+# Structure of Ancillary Data
+
+The structure of the ancillary data is outside the scope of this memo. However
+it should have two explicit properties: it should 
+
+
+# Structure of Pointer Label
+
+An possible structure for a pointer LSE is shown in {{FIG-mpls--ptr-LSE}}.
+
+     0                   1                   2                   3
+     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                Label                  | Flg |S|   Pointer     |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+
+    Label:       contains the label that triggers the pointer behavior
+
+    Flg (Flags): Contains a number of flags that clarify the pointer
+         Bit 20: Size of pointer units, Bit 20 = 1 units are octets,
+	         Bit = 1 units are 16 bit quantities
+    S          : BoS as per {{RFC3032}}
+    Pointer    : Pointer to the start of the specific ancillary data
+                 block.
+{: #FIG-mpls--ptr-LSE title="MPLS Pointer LSE"}
+
+
+# Security Considerations
+
+This proposal does not change the security of the MPLS data plane. Normal
+operational practice is to prohibit the ingress of an MPLS packet from
+other than a trusted source. An attacker that breaches the physical security
+of an MPLS domain has many methods of attack by manipulating the label
+stack, and this mechanism does not significantly increase that risk.
+
+# IANA Considerations
+
+This document has no IANA requests.
