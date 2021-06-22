@@ -197,7 +197,7 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
       (including the BIER-TE controller) and BIER-TE forwarding plane,
       and the routing underlay.
 
-   o  Section 3.3 specifies the behavior of the BIER-TE forwarding plane
+   o  Section 4 specifies the behavior of the BIER-TE forwarding plane
       with the different type of adjacencies and possible variations of
       BIER-TE forwarding pseudocode, and finally the mandatory and
       optional requirements.

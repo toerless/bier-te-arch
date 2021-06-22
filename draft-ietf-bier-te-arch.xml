@@ -132,7 +132,7 @@ can also be a good fit to support multicast path steering in Segment Routing (SR
     (overlay) topology and finally a summary of the relationship between BIER and BIER-TE and a discussion of accelerated hardware forwarding.</t>
     <t><xref target="components"/> describes the components of the BIER-TE architecture,
      Flow overlay, BIER-TE layer with the BIER-TE control plane (including the BIER-TE controller) and BIER-TE forwarding plane, and the routing underlay.</t>
-    <t><xref target="forwarding-plane"/> specifies the behavior of the BIER-TE forwarding plane with the different type of adjacencies and possible variations of BIER-TE forwarding pseudocode, and finally the mandatory and optional requirements.</t> 
+    <t><xref target="forwarding"/> specifies the behavior of the BIER-TE forwarding plane with the different type of adjacencies and possible variations of BIER-TE forwarding pseudocode, and finally the mandatory and optional requirements.</t> 
     <t><xref target="controller-ops"/> describes operational considerations for the BIER-TE controller, foremost how the BIER-TE controller can optimize the use of BP by using specific type of BIER-TE adjacencies for different type of topological situations, but also how to assign bits to avoid loops and duplicates (which in BIER-TE does not come for free), and finally how SI, sobdomains and BFR-ids can be managed by a BIER-TE controller, examples and summary.</t>
     <t><xref target="SR"/> concludes the technology specific sections of document by further relating BIER-TE to Segment Routing (SR).</t>
 </list></t>
