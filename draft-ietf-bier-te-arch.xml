@@ -87,7 +87,7 @@ with BIER.</t>
 
 <t>BIER-TE introduces a new semantic for bit positions (BP) that indicate adjacencies,
 as opposed to BIER in which BPs indicate Bit-Forwarding Egress Routers (BFER).
-BIER-TE can leverage BIER forwarding engines with little or no changes.
+BIER-TE can leverage BIER forwarding engines with little changes.
 BIER-TE can co-exist with BIER forwarding in the same domain, for example by using
 separate BIER sub-domains (SDs). Except for the optional routed adjacencies, BIER-TE does not
 require a BIER routing underlay, and can therefore operate without depending
@@ -371,7 +371,7 @@ are used.</t>
 
 <section anchor="comparison" title="Relationship to BIER">
 
-<t>BIER-TE is designed to be a simple extension to the BIER forwarding plane allowing for it to be added to BIER deployments where it can be beneficial.</t>
+<t>BIER-TE is designed so that is forwarding plane is a simple extension to the BIER forwarding plane, hence allowing for it to be added to BIER deployments where it can be beneficial.</t>
 <t>BIER-TE is also intended as an option to expand the BIER architecure into deployments where BIER  may no be the best fit, such as statically provisioned networks with needs for path steering but without desire for distributed routing protocols.</t>
 
 <t><list style="numbers">
