@@ -5,10 +5,10 @@
 Network Working Group                                     T. Eckert, Ed.
 Internet-Draft                                                 Futurewei
 Intended status: Standards Track                              G. Cauchie
-Expires: April 4, 2021                                  Bouygues Telecom
+Expires: January 10, 2022                               Bouygues Telecom
                                                                 M. Menth
                                                  University of Tuebingen
-                                                             Oct 1, 2020
+                                                            July 9, 2021
 
 
      Tree Engineering for Bit Index Explicit Replication (BIER-TE)
@@ -53,16 +53,16 @@ Status of This Memo
 
 
 
-Eckert, et al.            Expires April 4, 2021                 [Page 1]
+Eckert, et al.          Expires January 10, 2022                [Page 1]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
-   This Internet-Draft will expire on April 4, 2021.
+   This Internet-Draft will expire on January 10, 2022.
 
 Copyright Notice
 
-   Copyright (c) 2020 IETF Trust and the persons identified as the
+   Copyright (c) 2021 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -109,9 +109,9 @@ Table of Contents
 
 
 
-Eckert, et al.            Expires April 4, 2021                 [Page 2]
+Eckert, et al.          Expires January 10, 2022                [Page 2]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
    5.  BIER-TE Controller Operational Considerations . . . . . . . .  26
@@ -165,9 +165,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                 [Page 3]
+Eckert, et al.          Expires January 10, 2022                [Page 3]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
    Topology.  Other BPs are empty in the BIFT.  The BFR replicate and
@@ -221,9 +221,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                 [Page 4]
+Eckert, et al.          Expires January 10, 2022                [Page 4]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
    fewer addressing bits than explicit BitStrings, but they introduce
@@ -277,9 +277,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                 [Page 5]
+Eckert, et al.          Expires January 10, 2022                [Page 5]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
    BIER-TE Topology:
@@ -333,9 +333,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                 [Page 6]
+Eckert, et al.          Expires January 10, 2022                [Page 6]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
    Assume a packet from BFR1 should be sent via BFR4 to BFR6.  This
@@ -389,9 +389,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                 [Page 7]
+Eckert, et al.          Expires January 10, 2022                [Page 7]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
    BIER-TE Topology:
@@ -445,9 +445,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                 [Page 8]
+Eckert, et al.          Expires January 10, 2022                [Page 8]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
    The BIER-TE Topology consists of the BIFTs of all the BFR and can
@@ -501,9 +501,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                 [Page 9]
+Eckert, et al.          Expires January 10, 2022                [Page 9]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
            control plane calculated next-hop toward that BFER.  In BIER-
@@ -557,9 +557,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                [Page 10]
+Eckert, et al.          Expires January 10, 2022               [Page 10]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
            option, the same SD may or may not be reusable across BIER
@@ -613,9 +613,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                [Page 11]
+Eckert, et al.          Expires January 10, 2022               [Page 11]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
                    <------BGP/PIM----->
@@ -669,9 +669,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                [Page 12]
+Eckert, et al.          Expires January 10, 2022               [Page 12]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
        3.  Optionally assign BFR-id to BFIR for later insertion into
@@ -725,9 +725,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                [Page 13]
+Eckert, et al.          Expires January 10, 2022               [Page 13]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
 3.2.1.1.  BIER-TE Topology discovery and creation
@@ -781,9 +781,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                [Page 14]
+Eckert, et al.          Expires January 10, 2022               [Page 14]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
    See also [I-D.ietf-bier-multicast-http-response] for a solution
@@ -837,9 +837,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                [Page 15]
+Eckert, et al.          Expires January 10, 2022               [Page 15]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
    copy, the BFR clears all BPs in the BitString of the packet for which
@@ -893,9 +893,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                [Page 16]
+Eckert, et al.          Expires January 10, 2022               [Page 16]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
    specific details of BIER-TE policies and how a controller uses them
@@ -949,9 +949,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                [Page 17]
+Eckert, et al.          Expires January 10, 2022               [Page 17]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
      ------------------------------------------------------------------
@@ -1005,9 +1005,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                [Page 18]
+Eckert, et al.          Expires January 10, 2022               [Page 18]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
    Packets sent to an adjacency with "DoNotClear" (DNC) set in the BIFT
@@ -1061,9 +1061,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                [Page 19]
+Eckert, et al.          Expires January 10, 2022               [Page 19]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
    packets.  Local_decap() adjacencies require the BFER to support
@@ -1117,9 +1117,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                [Page 20]
+Eckert, et al.          Expires January 10, 2022               [Page 20]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
    routes" via e.g.  MPLS label stacks or appropriate header extensions
@@ -1173,9 +1173,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                [Page 21]
+Eckert, et al.          Expires January 10, 2022               [Page 21]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
    In BIER-TE, a BFR-NBR is an adjacency, forward_connected,
@@ -1229,9 +1229,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                [Page 22]
+Eckert, et al.          Expires January 10, 2022               [Page 22]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
    o  The code loops over the adjacencies because there may be more than
@@ -1285,9 +1285,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                [Page 23]
+Eckert, et al.          Expires January 10, 2022               [Page 23]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
 4.5.  Basic BIER-TE Forwarding Example
@@ -1341,9 +1341,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                [Page 24]
+Eckert, et al.          Expires January 10, 2022               [Page 24]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
       BIFT BFIR2:
@@ -1397,9 +1397,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                [Page 25]
+Eckert, et al.          Expires January 10, 2022               [Page 25]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
    of the BIER header and pass the payload to IP multicast.  IP
@@ -1453,9 +1453,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                [Page 26]
+Eckert, et al.          Expires January 10, 2022               [Page 26]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
 5.1.1.  P2P Links
@@ -1509,9 +1509,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                [Page 27]
+Eckert, et al.          Expires January 10, 2022               [Page 27]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
    This optimization will not work if an upstream interface of the BFER
@@ -1565,9 +1565,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                [Page 28]
+Eckert, et al.          Expires January 10, 2022               [Page 28]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
    in Data-Center or broadband-aggregation networks with minimal use of
@@ -1621,9 +1621,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                [Page 29]
+Eckert, et al.          Expires January 10, 2022               [Page 29]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
 5.1.7.  Equal Cost MultiPath (ECMP)
@@ -1677,9 +1677,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                [Page 30]
+Eckert, et al.          Expires January 10, 2022               [Page 30]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
    across alternative paths across different transit BFR, and it
@@ -1733,9 +1733,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                [Page 31]
+Eckert, et al.          Expires January 10, 2022               [Page 31]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
      ------------------------------------------------------------------
@@ -1789,9 +1789,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                [Page 32]
+Eckert, et al.          Expires January 10, 2022               [Page 32]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
                       ...............
@@ -1845,9 +1845,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                [Page 33]
+Eckert, et al.          Expires January 10, 2022               [Page 33]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
    An example of (A) was given in Figure 15, where BP 0:7, BP 0:8 and BP
@@ -1901,9 +1901,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                [Page 34]
+Eckert, et al.          Expires January 10, 2022               [Page 34]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
    likely a good optimization, if the bandwidth of each ring was to be
@@ -1957,9 +1957,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                [Page 35]
+Eckert, et al.          Expires January 10, 2022               [Page 35]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
    receive traffic is limited, further optimizations of BP are possible.
@@ -2013,9 +2013,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                [Page 36]
+Eckert, et al.          Expires January 10, 2022               [Page 36]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
                     BFIR1
@@ -2069,9 +2069,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                [Page 37]
+Eckert, et al.          Expires January 10, 2022               [Page 37]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
    SI and sub-domain have different purposes in the BIER architecture
@@ -2125,9 +2125,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                [Page 38]
+Eckert, et al.          Expires January 10, 2022               [Page 38]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
    "Desired" topology because it depends on the physical topology, and
@@ -2181,9 +2181,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                [Page 39]
+Eckert, et al.          Expires January 10, 2022               [Page 39]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
    that is unique to the BFR in question.  For a BFIR this can be he
@@ -2237,9 +2237,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                [Page 40]
+Eckert, et al.          Expires January 10, 2022               [Page 40]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
    Communications between BFIR flow overlay and BIER-TE controller
@@ -2293,9 +2293,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                [Page 41]
+Eckert, et al.          Expires January 10, 2022               [Page 41]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
                 area1           area2        area3
@@ -2349,9 +2349,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                [Page 42]
+Eckert, et al.          Expires January 10, 2022               [Page 42]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
    subsets of BFERs are assigned to different SIs.  This is much worse
@@ -2405,9 +2405,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                [Page 43]
+Eckert, et al.          Expires January 10, 2022               [Page 43]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
    Sub-domains (SDs) in BIER-TE can be used like in BIER to create more
@@ -2461,9 +2461,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                [Page 44]
+Eckert, et al.          Expires January 10, 2022               [Page 44]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
    sequence of SID to reach the destination.  This is what BIER-TE and
@@ -2517,9 +2517,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                [Page 45]
+Eckert, et al.          Expires January 10, 2022               [Page 45]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
    The most important attack vector in BIER-TE is misconfiguration,
@@ -2573,9 +2573,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                [Page 46]
+Eckert, et al.          Expires January 10, 2022               [Page 46]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
       1.  restructuring: merged all controller sections under common
@@ -2629,9 +2629,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                [Page 47]
+Eckert, et al.          Expires January 10, 2022               [Page 47]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
       2.1 Removed discussion of encap, moved to 4.2.2 (m).
@@ -2685,9 +2685,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                [Page 48]
+Eckert, et al.          Expires January 10, 2022               [Page 48]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
       clearer, it now looks to authors as if use of IGP extensions would
@@ -2741,9 +2741,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                [Page 49]
+Eckert, et al.          Expires January 10, 2022               [Page 49]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
       5.2.1 Duplicated ring picture, added visuals for described
@@ -2797,9 +2797,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                [Page 50]
+Eckert, et al.          Expires January 10, 2022               [Page 50]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
       07: Further reworking text for Lou.
@@ -2853,9 +2853,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                [Page 51]
+Eckert, et al.          Expires January 10, 2022               [Page 51]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
       Explicitly ue forwarded_connected adjcency in ECMP adjcency
@@ -2909,9 +2909,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                [Page 52]
+Eckert, et al.          Expires January 10, 2022               [Page 52]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
       redeeming value in this example given how -03 introduced section
@@ -2965,9 +2965,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                [Page 53]
+Eckert, et al.          Expires January 10, 2022               [Page 53]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
       - reworked pseudocode section to have one pseudocode that mirrors
@@ -3021,9 +3021,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                [Page 54]
+Eckert, et al.          Expires January 10, 2022               [Page 54]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
       - removed FrrUpDown(..) and //FRR operations in
@@ -3077,9 +3077,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                [Page 55]
+Eckert, et al.          Expires January 10, 2022               [Page 55]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
 11.  References
@@ -3133,9 +3133,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                [Page 56]
+Eckert, et al.          Expires January 10, 2022               [Page 56]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
    [I-D.ietf-roll-ccast]
@@ -3189,9 +3189,9 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                [Page 57]
+Eckert, et al.          Expires January 10, 2022               [Page 57]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
    [RFC7752]  Gredler, H., Ed., Medved, J., Previdi, S., Farrel, A., and
@@ -3245,9 +3245,9 @@ Authors' Addresses
 
 
 
-Eckert, et al.            Expires April 4, 2021                [Page 58]
+Eckert, et al.          Expires January 10, 2022               [Page 58]
 
-Internet-Draft                BIER-TE ARCH                      Oct 2020
+Internet-Draft                BIER-TE ARCH                     July 2021
 
 
    Gregory Cauchie
@@ -3301,4 +3301,4 @@ Internet-Draft                BIER-TE ARCH                      Oct 2020
 
 
 
-Eckert, et al.            Expires April 4, 2021                [Page 59]
+Eckert, et al.          Expires January 10, 2022               [Page 59]

@@ -84,7 +84,7 @@
                                 <email>menth@uni-tuebingen.de</email>
                         </address>
                 </author>
-                <date month="Oct" year="2020"/>
+                <date month="July" year="2021"/>
                 <abstract>
 <t> This memo describes per-packet stateless strict and loose path
 steered replication and forwarding for Bit Index Explicit Replication
