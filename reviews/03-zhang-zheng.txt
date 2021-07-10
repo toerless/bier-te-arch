@@ -1,0 +1,111 @@
+From: Toerless Eckert <tte@cs.fau.de>
+To: zhang.zheng@zte.com.cn
+Cc: gcauchie@bouyguestelecom.fr, wolfgang.braun@uni-tuebingen.de,
+	menth@uni-tuebingen.de, bier@ietf.org
+Bcc: 
+Subject: Re: [Bier] Comments on draft-ietf-bier-te-arch-00
+Reply-To: 
+In-Reply-To: <201804121520243382476@zte.com.cn>
+
+Sandy,
+
+I am a bit puzzled, rechecking the mailing list, i thought i had
+replied to your review, but seemingly only partial. Mea maxima culpa.
+Replies to your review inline, fixes in -04. Diff here.
+
+http://tools.ietf.org//rfcdiff?url1=http://tools.ietf.org/id/draft-ietf-bier-te-arch-03.txt&url2=http://tools.ietf.org/id/draft-ietf-bier-te-arch-04.txt
+
+Cheers
+    Toerless
+
+P.S.: The TE yang model draft is in my queue, but blocked by first getting this doc into IESG, so i am sure to know what the yang model would need to cover.
+
+On Thu, Apr 12, 2018 at 03:20:24PM +0800, zhang.zheng@zte.com.cn wrote:
+> Hi authors,
+> 
+> There are some small nits in several example parts, IMO it's better to revise them though these nits may not lead to misunderstanding.
+
+> 1)In section 3.4,
+> a, "pXX indicate ......  For example,
+>    p9 is the adjacency towards BFR9 on the LAN connecting to BFER2."
+> ---There isn't BFR9 in the figure, it should be BFR5.
+
+Ack.
+
+> b, "BFIR2 forwards based on that BitString......
+>    Only p13 is in BitString which has an adjacency towards BFR3.  BFIR2 resets p2 in BitString and sends a copy towards BFR2."
+> ---It should be:
+> ---Only p2  is in BitString which has an adjacency towards BFR3. BFIR2 resets p2 in BitString and sends a copy towards BFR3."
+> 
+> 
+> 2), In the second paragraph of section 3.5,
+> "When a packet is received, ......, but not BIER-T
+>    itself.  It is expected ......."
+> ---It is "BIER-TE".
+
+Paragraph was changed/removed in later version already.
+
+> 3) In the pseudocode of section 6,
+> 
+> "for (Index = 0; Index++ ; Index <= BitStringLength)
+>      if(BIFT[Index] != <empty>)
+>          MyBitsOfInterest != 2<<(Index-1)"
+> 
+> ---My understanding is MyBitsOfInterest is the collection of the non-zero bps in a BIFT array. The corresponding bit in MyBitsOfInterest should be set to 1 when BIFT[Index]'s value is non-zero. If my understanding is right, it seems like the pseudocode should be:
+> 
+> 
+> "for (Index = 0; Index++ ; Index < BitStringLength)
+>     if(BIFT[Index] != <empty>)
+>         MyBitsOfInterest |= 1<<(Index);"
+>
+> And this modification is also suitable for the ForwardBierTePacket pseudocode example in section 6.
+
+Yepp, correct, but i did remove the text in question in -01 because i wanted to simplify the forwarding code, and these mybitsofinteret where purely performance optimizations.
+
+> 4) In the first paragraph of section 7.5.1,
+> 
+> "Consider a network setup with a bitstring length of 256 for a network
+>    topology ......  The network has 6 areas,
+>    each with ca. 180 BFR, connecting via a core with some larger (core)
+>    BFR.  To address all BFER with BIER, 4 SI are required."
+> 
+> ---It seems like 4 SIs for 256 BitStringLength are not enough to hold 180*6=1080 BFERs. To modify simply, 170 BFR is suitable.
+
+Thanks, fixed.
+
+> 5) In the pseudocode of section 6,
+> 
+> The "interface" mentioned in ForwardBierTePacket pseudocode seems the same as "adjacency". Should it be modified uniformly?
+
+I think this is fine without changes. Bits have some adjacency/ies associated with them.
+forward_connected is one such adjacency. An adjacency may have parameters.
+interface,neighbor,DNR are the parameters of the adjacency.
+
+Let me know if there is still anything confusing to you in this terminology, or
+if something like hat sentence should be put into the text as additional clarification.
+
+> BTW: In section 4.7, I am not understanding well about the usage of seed. Are these seeds' value in BFR1/2/3's BIFT entry same? 
+>
+> Could you please add more detail about how to use it?
+
+So, i changed the text to talk about seed1 and seed2 to make it clearer, that in the
+picture all three BFR use the same seed1 and that the problem i solved by using
+seed1 and seed2. 
+
+I also preceeded the explanation with text stating that the document does not
+standardize an ECMP algorithm, but giving an example algorithm to better
+understand the explanations.
+
+   forward(packet, ECMP(adj(0), adj(1),... adj(N-1), seed)):
+         i = (packet(bier-header-entropy) XOR seed) % N
+	 forward packet to adj(i)
+
+Let me know if the enhanced text is sufficient.
+
+Thank you so much
+
+Toerless
+
+> Thanks,
+> 
+> Sandy

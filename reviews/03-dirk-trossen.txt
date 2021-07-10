@@ -1,0 +1,146 @@
+From: Toerless Eckert <tte@cs.fau.de>
+To: Dirk Trossen <Dirk.Trossen@InterDigital.com>
+Cc: "bier@ietf.org" <bier@ietf.org>
+Bcc: 
+Subject: Re: [Bier] Comments on draft-ietf-bier-te-arch-03
+Reply-To: 
+In-Reply-To: <MN2PR10MB3695A13F3BE53D98511E58A2F3A20@MN2PR10MB3695.namprd10.prod.outlook.com>
+
+Dirk: Thanks so much for your review. Comments inline.
+
+Fixes from your review have been included in the -04 version of the document.
+
+http://tools.ietf.org//rfcdiff?url1=http://tools.ietf.org/id/draft-ietf-bier-te-arch-03.txt&url2=http://tools.ietf.org/id/draft-ietf-bier-te-arch-04.txt
+
+Cheers
+    Toerless
+
+On Thu, Aug 29, 2019 at 10:13:04AM +0000, Dirk Trossen wrote:
+> All,
+> 
+> As volunteered during the recent Montreal WG meeting, I've reviewed the BIER-TE draft with the following comments with the notation "pXpYlZ" to be read as "page X paragraph Y line Z" (not counting section headings as a paragraph) for easier reference in the nitpick comments below (i.e., for small corrections):
+> 
+>   1.  Overall, the draft is very comprehensive in description and well structured as well as detailed in the various aspects of its descriptions. Generally, I am very supportive to seeing this draft progress and I'm very curious on seeing/hearing/reading about realizations.
+
+Thanks!
+
+>   2.  Content comments:
+>      *   The draft well motivates the use of BPs indicating forwarding adjacencies rather than BFERs for the purpose of traffic engineering with comparisons to the BIER model of forwarding in the various parts of the draft. As a possible 'external' reference, it might be useful to refer to work on path-based forwarding in SDN environments that is based on the same motivation and has similarities at the solution detail level (albeit simpler in many ways since not connected to BIER). The introduction could possibly have such link to "M. J. Reed, M. Al-Naday, N. Thomos, D. Trossen, G. Petropoulos, S. Spirou, Stateless multicast switching in software defined networks, ICC 2016, Kuala Lumpur, Maylaysia, 2016"
+
+Sure. Let me know if you are not fine with the following paragraph added into section 1 (introduction) to reference the ICC document and i think similar work in the context of ROLL by Carsten:
+
+<t>Note that related work <xref target="ICC"/>, <xref target="I-D.ietf-roll-ccast"/>
+uses bloom filters to represent  leaves or edges of the intended delivery tree.  Bloom filters
+can support larger trees with fewer adressing bits, but they introduce the heuristic risk of
+false positives and can not reset bits in the bitstring during forwarding to avoid loops.
+For these reasons, BIER-TE does not use bloom filters, but explicit bitstrings like BIER.</t>
+
+>      *   In Section 2, there is a reference to four 'layers' but I personally find the notion of a 'BIER-TE Controller Host' as a separate layer confusing, firstly starting with the mapping of a single 'host' entity to a 'layer' but also since even the text itself outlines the 'BIER-TE Controller Host' and its connections to the BF(I/E)Rs as the 'control plane' of BIER-TE. So I wonder if 'BIER-TE control plane' would be a more adequate name?
+
+Right. Changed Section 2 title and text from layer to components, also added
+"BIER-TE control plane" below "BIER-TE controller host", text e.g.:
+
+<t>End to end BIER-TE operations consists of four mayor
+components: The "Multicast Flow Overlay", the "BIER-TE control plane"
+consisting of the "BIER-TE Controller Host" and its signaling
+channels to the BFR, the "Routing Underlay" and the "BIER-TE forwarding layer".
+The Bier-TE Controller Host is the new architectural component in
+BIER-TE compared to BIER.</t>
+
+>      *   Section 2.2.3 talks about per-multicast flow and its state in the BFIR. It might be worthwhile to link this sub-section to the 'HTTP multicast overlay' draft (https://tools.ietf.org/html/draft-ietf-bier-multicast-http-response-01) where said state would be maintained in the SH. Main point here is that multicast state, in my view, can (and maybe should?) be maintained by the multicast flow overlay.
+
+Fixed text to 2.2.3:
+
+<t>The BIER-TE controller host interacts with the multicast flow overlay
+to determine what multicast flow needs to be sent by a BFIR
+to which set of BFER.
+....
+<t>See <xref target="I-D.ietf-bier-multicast-http-response"/> for a solution
+describing this interaction.</t>
+
+Hope this is sufficient. 
+
+>      *   In Section 2.3, i.e., p11p2s6, the sentence talks about
+>  "the BFR resets all BitPositions in the BitString of the packet to which it can create a copy".
+> From my understanding, the BitPositions to all forwarding adjacencies to which a copy is created are reset, while I would think that the sentence above might be understood as simply resetting all BitPositions if a copy is being created.
+> So maybe changing this into
+> "the BFR resets all those BitPositions in the BitString of the packet of all those forwarding adjacencies to which it can create a copy"
+> would avoid such confusion.
+
+Thanks, but your sentence also looks somewhat confusing (at least to me).
+
+Changed to:
+
+Before sending any copy, the
+BFR resets all BP in the BitString of the packet for which the
+BFR has one or more adjacencies in the BIFT, except when the adjacency
+indicates "DoNotReset" (DNR, see <xref target="forward-connected"/>)
+
+(added mentioning of DNR, it was an oversight that it was not in here).
+
+>      *   In Section 3.4, Figure 5 shows a BIER-TE Forwarding Example. While this makes sense to me, given the flow of the document, it nevertheless duplicates similar figures in Section 1, specifically Figure 1 and 2. Either we leave this and simply have those two places of explanation, following the flow of description, or possibly simply refer in Section 3.4 back to Figures 1 and 2 in Section 1 in order to streamline the draft.
+
+Right. I have added the following text tos tart of 3.4 now:
+
+<t>[RFC Editor: remove this section.]</t>
+
+<t>THIS SECTION TO BE REMOVED IN RFC BECAUSE IT WAS SUPERCEEDED BY SECTION 1.1 EXAMPLE - UNLESS REVIEWERS CHIME IN AND EXPRESS DESIR
+E TO KEEP THIS ADDITIONAL EXAMPLE SECTION.</t>
+
+>      *   In Section 7.2, i.e., p29p4l2, there is a statement on bit efficiency ("...easily be as low as 20% or as high as 80%"). I would really like to see a reference to evidence to this since I'm very interested in the numbers but it's always good to link them to something, particularly when being so specific.
+
+I am not aware of a good published formal analysis of the number of edges vs. leaves in a topology. The 20/80% just came from extrapolating simple cases such as a tree-like topology for the 20% (number of edges is log(n), where n is the number leaves), vs. DataCenter topologies with high-number of ECMP path options (hence also ECMP adjacencies to more effectively manage those).
+
+So, i changed the wording to be more vague *sigh*:
+
+<t>The total number of bits to describe the topology vs. the BFER in a BIFT:SI can 
+range widely based on the size of the topology and the amount of alternative paths
+in it. The higher the percentage, the higher the likelihood, that those topology 
+bits are not just BIER-TE overhead without additional benefit, but instead that they
+will allow to express desirable traffic-engineering path alternatives.</t>
+
+>      *   Section 8 compares SR and BIER-TE, which I like seeing in the draft. I would argue that the possibility for creating opportunistic multicast relations (through a simple binary OR of unicast relations) is a significant advantage over SR. Here, a possible link to the 'HTTP multicast overlay' draft (see link above) might be useful, which makes use of this capability.
+
+Added at end of section:
+
+<t>Both BIER and BIER-TE allow BFIR to "opportunistically" copy packets to a set
+of desired BFER on a packet-by-packet basis. In BIER, this is done by  or'ing
+the BP for the desired BFER. In BIER-TE this can be done by or'ing for each 
+desired BFER a bitstring using the "independent branches" approach described in
+<xref target="bfr-id"/> and therefore also indicating the engineered path towards
+each desired BFER. This is the approach that <xref target="I-D.ietf-roll-ccast"/>
+relies on.</t>
+
+>   3.  Nitpicks:
+>      *   P4p1l1: "adjacencies" change to "adjacencies"
+>      *   P5p1l2: "6 BFR..." to "6 BFRs..." (with my working assumptions that an acronym is singular)
+>      *   P5p1l2: "All BFR..." change to "All BFRs..."
+>      *   P6p1l4: "...BFR1 to to send..." change to "...BFR1 to send..."
+>      *   P6p3l3: "...in the prior casse." change to "...in the prior case."
+>      *   P7p3l1: "...consists of the BIFT of all the the" change to "...consists of the BIFT of all the"
+>      *   P9p3l1: "During 'bring-up..." change to "During set-up..." or "During initial configuration..."
+>      *   P13p2l4: "The can be used" change to "They can be used"
+>      *   P13p6l1: "...to the BIER BIFT and are are" change to "...to the BIER BIFT and are"
+>      *   P17p2l6: "This Basic BIER-TE requirements make..." change to "These basic BIER-TE requirements make..."
+>      *   P21p1l3: "example is not mean as a likely setup" change to "example is not meant as a likely setup"
+>      *   P29p1l1: "which lead to" change to "which leads to"
+>      *   P30p6l1: "For non-leaf BFER, ..." change to "For a non-leaf BFER, ...."
+>      *   P30p7l1: "As explained earlier in the document, leaf BFER do..." change to "As explained earlier in the document, leaf BFERs do..."
+
+Thank you so much.
+
+> I hope this is useful.
+
+Very much so.
+
+Cheers
+    Toerless
+
+> Best,
+> 
+> Dirk
+
+> _______________________________________________
+> BIER mailing list
+> BIER@ietf.org
+> https://www.ietf.org/mailman/listinfo/bier
