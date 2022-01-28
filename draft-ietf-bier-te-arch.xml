@@ -12,6 +12,7 @@
 <!ENTITY RFC3209 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3209.xml">
 <!ENTITY RFC3552 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3552.xml">
 <!ENTITY RFC4253 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4253.xml">
+<!ENTITY RFC4456 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4456.xml">
 <!ENTITY RFC4655 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4655.xml">
 <!ENTITY RFC5440 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5440.xml">
 <!ENTITY RFC7752 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7752.xml">
@@ -31,6 +32,7 @@
 <!ENTITY RFC8279 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8279.xml">
 <!ENTITY RFC8296 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8296.xml">
 <!ENTITY RFC8402 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8402.xml">
+<!ENTITY RFC8556 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8556.xml">
 
 
 ]>
@@ -77,16 +79,16 @@
                     <email>tte+ietf@cs.fau.de</email>
                   </address>
                 </author>
-                <author fullname="Gregory Cauchie" initials="G.C." surname="Cauchie">
-                        <organization>Bouygues Telecom</organization>
-                        <address>
-                                <email>GCAUCHIE@bouyguestelecom.fr</email>
-                        </address>
-                </author>
                 <author fullname="Michael Menth" initials="M.M." surname="Menth">
                         <organization>University of Tuebingen</organization>
                         <address>
                                 <email>menth@uni-tuebingen.de</email>
+                        </address>
+                </author>
+                <author fullname="Gregory Cauchie" initials="G.C." surname="Cauchie">
+                        <organization>Bouygues Telecom</organization>
+                        <address>
+                                <email>GCAUCHIE@bouyguestelecom.fr</email>
                         </address>
                 </author>
                 <date month="January" year="2022"/>
@@ -114,9 +116,9 @@ can also be a good fit to support multicast path steering in "Segment Routing" (
 
   <section anchor="overview" title="Overview">
 
-<t> BIER-TE is based on architecture, terminology and packet formats with (non-TE) BIER as
-described in <xref target="RFC8279"/> and <xref target="RFC8296"/>. This
-document describes BIER-TE in the expectation that the reader is familiar
+<t> BIER-TE is based on the (non-TE) BIER architecture, terminology and packet formats as described
+in <xref target="RFC8279"/> and <xref target="RFC8296"/>.
+This document describes BIER-TE in the expectation that the reader is familiar
 with these two documents.</t>
 
 <t>BIER-TE introduces a new semantic for "bit positions" (BP). They indicate adjacencies
@@ -313,7 +315,7 @@ paths and bandwidth consumption in the network, such as from pre-deployment plan
 assumed not to support BIER-TE, so traffic has to be unicast encapsulated across
 them.  To emphasize non-L2, but routed/tunneled forwarding of BIER-TE packets,
 these adjacencies are called "forward_routed". Otherwise, there is no difference
-in their processing over the aforementioned "forward_connected" adjacencies.</t>
+in their processing over the aforementioned forward_connected() adjacencies.</t>
 
 <t>In addition, bits are saved in the following example by assuming that BFR1 only
 needs to be BFIR but not BFER or transit BFR.</t>
@@ -373,7 +375,7 @@ minimize the required number of BP for adjacencies.
 <t>
 The BIER-TE Topology consists of the BIFTs of all the BFR and
 can also be expressed as a directed graph where the edges are the adjacencies 
-between the BFR labelled with the BP used for the adjacency. Adjacencies are
+between the BFRs labelled with the BP used for the adjacency. Adjacencies are
 naturally unidirectional.  BP can be reused across multiple adjacencies as long as this does not
 lead to undesired duplicates or loops as explained in <xref target="avoiding"/>.
 </t>
@@ -382,7 +384,7 @@ lead to undesired duplicates or loops as explained in <xref target="avoiding"/>.
 topology of the network as shown in the first example, this may be called a "native"
 BIER-TE topology. A topology consisting only of "forward_routed" adjacencies as
 shown in the second example may be called an "overlay" BIER-TE topology.
-A BIER-TE topology with both "forward_connected" and "forward_routed" adjacencies
+A BIER-TE topology with both forward_connected() and forward_routed() adjacencies
 may be called a "hybrid" BIER-TE topology.</t>
 
     </section>
@@ -397,9 +399,9 @@ may be called a "hybrid" BIER-TE topology.</t>
 <t><list style="numbers">
 <t>BIER-TE inherits the following aspects from BIER unchanged:
 <list style="numbers">
-    <t>The fundamental purpose of per-packet signaled packet replication and delivery via a BitString.</t>
+    <t>The fundamental purpose of per-packet signaled replication and delivery via a BitString.</t>
     <t>The overall architecture consisting of three layers, flow overlay, BIER(-TE) layer and routing underlay.</t>
-    <t>The supportable encapsulations including <xref target="RFC8296"/>.</t>
+    <t>The supported encapsulations <xref target="RFC8296"/>.</t>
     <t>The semantic of all <xref target="RFC8296"/> header elements used by the BIER-TE forwarding plane other than the semantic of the BP in the BitString.</t>
     <t>The BIER forwarding plane, except for how bits have to be cleared during replication.</t>
 </list></t>
@@ -419,14 +421,14 @@ may be called a "hybrid" BIER-TE topology.</t>
        and <xref target="RFC8444"/>.</t>
 
     <t>The reference option for the core part of the BIER-TE control plane is
-       the BIER-TE controller. Nevertheless, both BIER and BIER-TE BIFT forwarding
+       the BIER-TE controller. Nevertheless, both the BIER and BIER-TE BIFTs forwarding
        plane state could equally be populated by any mechanism.</t>
     <t>Assuming the reference options for the control plane,  BIER-TE replaces in-network autonomous path calculation by explicit paths calculated by the BIER-TE controller.</t>
 </list></t>
 
 <t>The following elements/functions described in the BIER architecture are not required by the BIER-TE architecture:
 <list style="numbers">
-    <t>BIRTs are not required on BFRs for BIER-TE when using a BIER-TE controller because the controller can directly populate the BIFTs. In BIER, BIRTs are populated by the distributed routing protocol support for BIER, allowing BFRs to populate their BIFTs locally from their BIRTs. Other BIER-TE control plane  or management plane options may introduce requirements for BIRTs for BIER-TE BFRs.</t>
+    <t>"Bit Index Routing Tables" (BIRTs) are not required on BFRs for BIER-TE when using a BIER-TE controller because the controller can directly populate the BIFTs. In BIER, BIRTs are populated by the distributed routing protocol support for BIER, allowing BFRs to populate their BIFTs locally from their BIRTs. Other BIER-TE control plane  or management plane options may introduce requirements for BIRTs for BIER-TE BFRs.</t>
     <t>The BIER-TE layer forwarding plane does not require BFRs to have a unique BP and therefore also no unique BFR-id.  See <xref target="leaf-bfer"/>.</t>
     <t>Identification of BFRs by the BIER-TE control plane is outside the scope of this specification. Whereas the BIER control plane uses BFR-ids in its BFR to BFR signaling, a BIER-TE controller may choose any form of identification deemed appropriate.</t>
     <t>BIER-TE forwarding does not require the BFIR-id field of the BIER packet header.</t>
@@ -434,7 +436,7 @@ may be called a "hybrid" BIER-TE topology.</t>
 
 <t>Co-existence of BIER and BIER-TE in the same network requires the following:
 <list style="numbers">
-<t>The BIER/BIER-TE packet header needs to allow addressing both BIER and BIER-TE BIFT. Depending on the encapsulation option, the same SD may or may not be reusable across BIER and BIER-TE.  See <xref target="encapsulation"/>. 
+<t>The BIER/BIER-TE packet header needs to allow addressing both BIER and BIER-TE BIFTs. Depending on the encapsulation option, the same SD may or may not be reusable across BIER and BIER-TE.  See <xref target="encapsulation"/>. 
 In either case, a packet is always only forwarded end-to-end via BIER or via BIER-TE (ships in the nights forwarding).</t>
 
 <t>BIER-TE deployments will have to assign BFR-ids to BFRs and insert them into the BFIR-id field of BIER packet headers as BIER does, whenever the deployment uses (unchanged) components developed for BIER that use BFR-id, such as multicast flow overlays or BIER layer control plane elements. See also <xref target="bfr-id"/>.</t>
@@ -447,12 +449,13 @@ In either case, a packet is always only forwarded end-to-end via BIER or via BIE
 
     <section anchor="fwd-comparison" title="Accelerated/Hardware forwarding comparison">
 
-<t>BIER-TE forwarding rules, especially the Bitstring parsing are designed to be as close
+<t>BIER-TE forwarding rules, especially the BitString parsing are designed to be as close
 as possible to those of BIER in the expectation that this eases the programming of BIER-TE forwarding 
 code and/or BIER-TE forwarding hardware on platforms supporting BIER. 
 The pseudocode in <xref target="pseudocode"/> shows how existing 
-(non-TE) BIER/BIFT forwarding can be modified to support the REQUIRED BIER-TE forwarding functionality,
-by using BIER BIFT's "Forwarding Bit Mask" (F-BM): Only the clearing of bits to avoid duplicate
+(non-TE) BIER/BIFT forwarding can be modified to support the required BIER-TE forwarding
+functionality (<xref target="requirements"/>), by using BIER BIFT's "Forwarding Bit Mask" (F-BM):
+Only the clearing of bits to avoid duplicate
 packets to a BFR's neighbor is skipped in BIER-TE forwarding because it is not necessary
 and could not be done when using BIER F-BM.</t>
 
@@ -502,6 +505,14 @@ represent by the "BIER-TE Controller".</t>
 <t>The Multicast Flow Overlay has the same role as described for BIER
 in <xref target="RFC8279"/>, Section 4.3. See also <xref target="engineered-bitstrings"/>.</t>
 
+<t>When a BIER-TE controller is used, then the signaling for the Multicast Flow Overlay may 
+also be preferred to operate through a central point of control. For BGP based
+overlay flow services such as "Multicast VPN Using BIER" (<xref target="RFC8556"/>) this
+can be achieved by making the BIER-TE controller operate as a BGP Route
+Reflector (<xref target="RFC4456"/>) and combining it with signaling through BGP
+or a different protocol for the BIER-TE controller calculated BitStrings.
+See <xref target="engineered-bitstrings"/> and <xref target="bitstring-mappings"/>.</t>
+
     </section>
     <!-- flow-overlay -->
 
@@ -518,16 +529,16 @@ ISIS/OSPF extensions for BIER, <xref target="RFC8401"/> and <xref target="RFC844
 <t><list style="hanging">
     <t anchor="topology-control" hangText="1. BIER-TE topology control:">During initial provisioning of the network and/or during modifications of its topology and/or services, the protocols and/or procedures to establish BIER-TE BIFTs:
     <list style="numbers">
-        <t anchor="topology-control-1">Determine the desired BIER-TE topology for a BIER-TE sub-domains: the native and/or overlay adjacencies that are assigned to BPs.</t>
-        <t>Determine the per-BFR BIFT from the BIER-TE topology.</t>
-        <t>Optionally assign BFR-ids to BFIRs for later insertion into BIER headers on BFIRs as BFIR-id. Alternatively, BFIR-id in BIER packet headers may be managed solely by the flow overlay layer and/or be unused.</t>
-        <t>Install/update the BIFTs into the BFRs and optionally BFR-ids into BFIRs.</t>
+        <t anchor="topology-control-1">Determine the desired BIER-TE topology for a BIER-TE sub-domains: the native and/or overlay adjacencies that are assigned to BPs. Topology discovery is discussed in <xref target="topology-discovery"/> and the various aspects of the BIER-TE controllers determinations about the topology are discussed throughout <xref target="controller-ops"/></t>
+        <t>Determine the per-BFR BIFT from the BIER-TE topology. This is achieved by simply extracting the adjacencies of the BFR from the BIER-TE topology and populating the BFRs BIFT with them.</t>
+        <t>Optionally assign BFR-ids to BFIRs for later insertion into BIER headers on BFIRs as BFIR-id. Alternatively, BFIR-id in BIER packet headers may be managed solely by the flow overlay layer and/or be unused. This is discussed in <xref target="bfr-id"/>.</t>
+        <t>Install/update the BIFTs into the BFRs and optionally BFR-ids into BFIRs. This is discussed in <xref target="topology-discovery"/>.</t>
     </list></t>
     <t anchor="tree-control" hangText="2. BIER-TE tree control:">During operations of the network, protocols and/or procedures to support creation/change/removal of overlay flows on BFIRs:
     <list style="numbers">
-        <t>Process the BIER-TE requirements for the multicast overlay flow: BFIR and BFERs of the flow as well as policies for the path selection of the flow.</t>
-        <t>Determine the BitStrings and optionally Entropy.</t>
-        <t>Install state on the BFIR to impose the desired BIER packet header(s) for packets of the overlay flow.</t>
+        <t>Process the BIER-TE requirements for the multicast overlay flow: BFIR and BFERs of the flow as well as policies for the path selection of the flow. This is discussed in <xref target="te-considerations"/>.</t>
+        <t>Determine the BitStrings and optionally Entropy. This is discussed in <xref target="engineered-bitstrings"/>, <xref target="te-considerations"/> and <xref target="bitstring-mappings"/>.</t>
+        <t>Install state on the BFIR to impose the desired BIER packet header(s) for packets of the overlay flow. Different aspects of this and the next point are discussed throughout <xref target="bier-te-controller"/> and in <xref target="encapsulation"/>, but the main responsibility of these two points is with the Multicast Flow Overlay (<xref target="flow-overlay"/>), which is architecturally inherited from BIER.</t>
         <t>Install the necessary state on the BFERs to decapsulate the BIER packet header and properly dispatch its payload.</t>
     </list></t>
 </list></t>
@@ -537,13 +548,13 @@ ISIS/OSPF extensions for BIER, <xref target="RFC8401"/> and <xref target="RFC844
 <t>[RFC-Editor: the following text has three references to anchors topology-control, topology-control-1 and tree-control. Unfortunately, XMLv2 does not offer any tagging that reasonable references are generated (i had this problem already in RFCs last year. Please make sure there are useful-to-read cross-references in the RFC in these three places after you convert to XMLv3.]</t>
 
 <t>This architecture describes the
-BIER-TE control plane as shown in <xref target="architecture"/> to consists of:
+BIER-TE control plane as shown in <xref target="architecture"/> to consist of:
     <list style="symbols">
-        <t>A single, centralized BIER-TE controller.</t>
-        <t>Data-models and protocols to communicate between controller and BFRs 
+        <t>A BIER-TE controller.</t>
+        <t>BFR data-models and protocols to communicate between controller and BFRs 
            in support of <xref target="topology-control">BIER-TE topology control</xref>,
            such as YANG/NETCONF/RESTCONF (<xref target="RFC7950"/>/<xref target="RFC6241"/>/<xref target="RFC8040"/>).</t>
-        <t>Protocols to communicate between controller and BFIR in support of
+        <t>BFR data-models and protocols to communicate between controller and BFIR in support of
            <xref target="tree-control">BIER-TE tree control</xref>, such as BIER-TE extensions
            for <xref target="RFC5440"/>.</t>
     </list>
@@ -563,23 +574,23 @@ which would then be necessary to coordinate its (distributed/decentralized) enti
 
 <t><xref target="topology-control-1">The first item of BIER-TE topology control</xref>
 includes network topology discovery and BIER-TE topology creation. The latter describes
-the process by which a Controller determines which routers are to be configured as BFR and the
+the process by which a Controller determines which routers are to be configured as BFRs and the
 adjacencies between them.</t>
 
 <t>In statically managed networks, such as in industrial environments, both discovery and creation can be a manual/offline process.</t>
 
 <t>In other networks, topology discovery may rely on protocols including extending a "Link-State-Protocol" based IGP into the BIER-TE controller itself, <xref target="RFC7752"/> (BGP-LS) or <xref target="RFC8345"/> (YANG topology) as well as BIER-TE specific methods, for example via <xref target="I-D.ietf-bier-te-yang"/>. These options are non-exhaustive.</t>
 
-<t>Dynamic creation of the BIER-TE topology can be as easy as mapping the network topology 1:1 to the BIER-TE topology by assigning a BP for every network subnet adjacency. In larger networks, it likely involves more complex policy and optimization decisions including how to minimize the number of BP required and how to assign BP across different BitStrings to minimize the number of duplicate packets across links when delivering an overlay flow to BFER using different SIs/BitStrings. These topics are discussed in <xref target="controller-ops"/>.</t>
+<t>Dynamic creation of the BIER-TE topology can be as easy as mapping the network topology 1:1 to the BIER-TE topology by assigning a BP for every network subnet adjacency. In larger networks, it likely involves more complex policy and optimization decisions including how to minimize the number of BPs required and how to assign BPs across different BitStrings to minimize the number of duplicate packets across links when delivering an overlay flow to BFER using different SIs/BitStrings. These topics are discussed in <xref target="controller-ops"/>.</t>
 
 <t>When the BIER-TE topology is determined, the BIER-TE Controller then pushes
 the BitPositions/adjacencies to the BIFT of the BFRs. On each BFR only those SI:BitPositions
 are populated that are adjacencies to other BFRs in the BIER-TE topology.</t>
 
-<t>Communications between the BIER-TE Controller and BFRs (beside topology discovery)
-is ideally via standardized protocols and data-models such as NETCONF/RESTCONF/YANG/PCEP.
-Vendor-specific CLI on the BFRs is also an option (as in many other SDN
-solutions lacking definition of standardized data model).</t>
+<t>Communications between the BIER-TE Controller and BFRs for both BIER-TE topology
+control and BIER-TE tree control is ideally via standardized protocols and data-models such
+as NETCONF/RESTCONF/YANG/PCEP.  Vendor-specific CLI on the BFRs is also an option (as in many other SDN
+solutions lacking definition of standardized data models).</t>
 
       </section>
 
@@ -629,12 +640,12 @@ receiving the adjacency up/down notification.</t>
 
     <section anchor="forwarding-plane" title="The BIER-TE Forwarding Plane">
 
-<t>[RFC-editor Q: "constitutes of" / "consists of" / "composed from..." ???]</t>
-<t>The BIER-TE Forwarding Plane constitutes of the following components:
+<t>[RFC-editor Q: "is constituted from" / "consists of" / "composed from..." ???]</t>
+<t>The BIER-TE Forwarding Plane is constituted from the following components:
     <list style="numbers">
-        <t>On BFIR, imposition of BIER header for packets from overlay flows. This is driven by a combination of state established by the BIER-TE control plane and/or the multicast flow overlay as explained in <xref target="flow-overlay"/>.</t>
-        <t>On BFR (including BFIR and BFER), forwarding/replication of BIER packets according to their BitString as explained below and optionally Entropy. Processing of other BIER header fields such as DSCP is outside the scope of this document.</t>
-        <t>On BFER, removal of BIER header and dispatching of the payload according to state created by the BIER-TE control plane and/or overlay layer.</t>
+        <t>On a BFIR, imposition of the BIER header for packets from overlay flows. This is driven by a combination of state established by the BIER-TE control plane and/or the multicast flow overlay as explained in <xref target="flow-overlay"/>.</t>
+        <t>On BFRs (including BFIR and BFER), forwarding/replication of BIER packets according to their SD, SI, "BitStringLength" (BSL), BitString and optionally Entropy fields as explained in <xref target="forwarding"/>. Processing of other BIER header fields such as DSCP is outside the scope of this document.</t>
+        <t>On BFERs, removal of the BIER header and dispatching of the payload according to state created by the BIER-TE control plane and/or overlay layer.</t>
     </list>
 </t>
 
@@ -735,57 +746,83 @@ specific traffic flows.</t>
 
   <section anchor="forwarding" title="BIER-TE Forwarding">
 
-    <section anchor="btft" title="The Bit Index Forwarding Table (BIFT)">
+    <section anchor="btft" title="The BIER-TE Bit Index Forwarding Table (BIFT)">
 
-<t>The BIFT exists in every BFR. For every
-sub-domain in use, it is a table indexed by SI:bit position and is populated by the
-BIER-TE control plane. Each index can be empty or contain a list of one or more
-adjacencies.</t>
+<t>The BIER-TE BIFT is the equivalent to the BIER BIFT for (non-TE) BIER. It
+exists on every BFR running BIER-TE. For every BIER sub-domain (SD) in use for BIER-TE,
+it is a table as shown shown in <xref target="adjacencies"/>. That example
+BIFT assumes a BSL of 8 bit positions (BPs) in the packets BitString.
+As in <xref target="RFC8279"/> this BSL is purely used for the example and not a BIER/BIER-TE
+supported BSL (minimum BSL is 64).</t>
 
-<t>Like BIER, BIER-TE can support multiple sub-domains, each with a separate BIFT.</t>
+<t>A BIER-TE BIFT compares to a BIER BIFT as shown in <xref target="RFC8279"/> as
+follows.</t>
 
-<t>In <xref target="RFC8279"/>, Figure 2, indices into the BIFT are SI:BitString and
-BFR-id. BitString is indicating a BP, and therefore: BFR-id = SI:BP = SI * 2^BSL + (BP - 1). 
-As shown in <xref target="adjacencies"/>, in BIER-TE, only SI:BP are used as indices into a BIFT because they identify adjacencies
-and not BFR.</t>
+<t>In both BIER and BIER-TE, BIFT rows/entries are indexed in their respective BIER pseudocode
+(<xref target="RFC8279"/> Section 6.5) and BIER-TE pseudocode (<xref target="pseudocode"/>)
+by the BIFT-index derived from the packets SI, BSL and the one bit position of the
+packets BitString (BP) addressing the BIFT row: BIFT-index = SI * BSL + BP - 1.
+BP within a BitString are numbered from 1 to BSL, hence the - 1 offset when converting
+to a BIFT-index. This document also uses the notion SI:BP to indicate BIFT rows,
+<xref target="RFC8279"/> uses the equivalent notion SI:BitString, where the BitString is
+filled with only the BP for the BIFT row.</t>
 
-<figure anchor="adjacencies" title="BIFT adjacencies">
+<t>In BIER, each BIFT-index addresses one BFER by its BFR-id = BIFT-index + 1
+and is populated on each BFR with the next-hop "BFR Neighbor" (BFR-NBR) towards that BFER.</t>
+
+<t>In BIER-TE, each BIFT-index and therefore SI:BP indicates one or more adjacencies
+between BFRs in the topology and is only populated with those adjacencies  forwarding
+entries on the BFR that is the upstream for these adjacencies. The BIFT entry are
+empty on all other BFRs.</t>
+
+<t>In BIER, each BIFT rows also requires a "Forwarding Bit Mask" (F-BM) entry 
+for BIER forwarding rules. In BIER-TE forwarding, F-BM is not required, but can be used
+when implementing BIER-TE on forwarding hardware derived from BIER forwarding, that
+must use F-BM. This is discussed in the first BIER-TE forwarding pseudocode in
+ <xref target="pseudocode"/>.</t>
+
+<figure anchor="adjacencies" title="BIER-TE BIFT with different adjacencies">
 <artwork align="left"><![CDATA[
   ------------------------------------------------------------------
-  | Index:          |  Adjacencies:                                |
-  | SI:bit position |  <empty> or one or more per entry            |
+  | BIFT-index |     | Adjacencies:                                |
+  | (SI:BP)    |(FBM)| <empty> or one or more per entry            |
   ==================================================================
-  | 0:1             |  forward_connected(interface,neighbor{,DNC}) |
+  |       BIFT indices for Packets with SI=0                       |
   ------------------------------------------------------------------
-  | 0:2             |  forward_connected(interface,neighbor{,DNC}) |
-  |                 |  forward_connected(interface,neighbor{,DNC}) |
+  | 0 (0:1)    | ... | forward_connected(interface,neighbor{,DNC}) |
   ------------------------------------------------------------------
-  | 0:3             |  local_decap({VRF})                          |
+  | 1 (0:2)    | ... | forward_connected(interface,neighbor{,DNC}) |
+  |            | ... | forward_connected(interface,neighbor{,DNC}) |
   ------------------------------------------------------------------
-  | 0:4             |  forward_routed({VRF,}l3-neighbor)           |
+  |  ...       | ... | ...                                         |
   ------------------------------------------------------------------
-  | 0:5             |  <empty>                                     |
+  | 4 (0:3)    | ... | local_decap({VRF})                          |
   ------------------------------------------------------------------
-  | 0:6             |  ECMP({adjacency1,...adjacencyN}, seed)      |
+  | 5 (0:4)    | ... | forward_routed({VRF,}l3-neighbor)           |
   ------------------------------------------------------------------
-  ...
-  | BitStringLength |  ...                                         |
+  | 6 (0:7)    | ... | <empty>                                     |
   ------------------------------------------------------------------
-                   Bit Index Forwarding Table
+  | 7 (0:8)    | ... | ECMP((adjacency1,...adjacencyN){,seed})     |
+  -----------------------------------------------------------------
+  |       BIFT indices for BitString/Packet with SI=1              |
+  ------------------------------------------------------------------
+  | 9 (1:1)    |     | ...                                         |
+  |  ...       |...  | ...                                         |
+  ------------------------------------------------------------------
+               BIER-TE Bit Index Forwarding Table (BIFT)
 
 ]]></artwork></figure>
 
-<t>The BIFT is programmed into the data plane of BFRs by the BIER-TE
-Controller and used to forward packets, according to the rules
+<t>The BIFT is configured for the BIER-TE data plane of a BFR by the BIER-TE
+Controller through an appropriate protocol and data-model. The BIFT is then 
+used to forward packets, according to the rules
 specified in the BIER-TE Forwarding Procedures.</t>
 
 <t>Note that a BIFT index (SI:BP) may be populated in the BIFT of more
-than one BFR. See <xref target="rings"/> for an example of how a BIER-TE controller
+than one BFR to save BPs. See <xref target="rings"/> for an example of how a BIER-TE controller
 could assign BPs to (logical) adjacencies shared across multiple BFRs,
 <xref target="leaf-bfer"/> for an example of assigning the same BP to different
-adjacencies, and <xref target="reuse"/> for guidelines regarding re-use of BPs across different 
-adjacencies.</t>
-
+adjacencies, and <xref target="reuse"/> for general guidelines regarding re-use of BPs across different adjacencies.</t>
 
 <t>{VRF} indicates the Virtual Routing and Forwarding context into which
 the BIER payload is to be delivered. This is optional and depends
@@ -798,7 +835,7 @@ on the multicast flow overlay.</t>
 
       <section anchor="forward-connected" title="Forward Connected">
 
-<t>A "forward_connected" adjacency is towards a directly connected
+<t>A "forward_connected()" adjacency is towards a directly connected
 BFR neighbor using an interface address of that BFR on the connecting
 interface. A forward_connected() adjacency does not route packets
 but only L2 forwards them to the neighbor.</t>
@@ -818,7 +855,7 @@ of DNC for other type of adjacencies was identified and their risk was not analy
 
       <section anchor="forward-routed" title="Forward Routed">
 
-<t>A "forward_routed" adjacency is an adjacency towards a BFR that
+<t>A "forward_routed()" adjacency is an adjacency towards a BFR that
 uses a (tunneling) encapsulation which will cause the packet to be
 forwarded by the routing underlay toward the adjacent BFR.  This can
 leverage any feasible encapsulation, such as MPLS or tunneling over IP/IPv6,
@@ -827,7 +864,7 @@ can either rely on the BIER/BIER-TE co-existence mechanisms described in
 <xref target="encapsulation"/>, or by explicit support for a BIER-TE payload type
 in the tunneling encapsulation.</t>
 
-<t>"forward_routed" adjacencies are necessary to pass BIER-TE traffic across
+<t>forward_routed() adjacencies are necessary to pass BIER-TE traffic across
 non BIER-TE capable routers or to minimize the number of required BP by
 tunneling over (BIER-TE capable) routers on which neither replication nor
 path-steering is desired, or simply to leverage path redundancy and FRR of the
@@ -840,12 +877,13 @@ independent of BIER-TE ECMP (<xref target="forward-ecmp"/>).</t>
 
       <section anchor="forward-ecmp" title="ECMP">
 
-<t>(non-TE) BIER ECMP is tied to the BIER BIFT processing semantic and are therefore
+<t>(non-TE) BIER ECMP is tied to the BIER BIFT processing semantic and is therefore
 not directly usable with BIER-TE.</t>
 
-<t>A BIER-TE "Equal Cost Multipath" (ECMP) adjacency has a list of two or
-more non-ECMP adjacencies and an optional seed parameter. When a BIER-TE packet is copied
-onto such an ECMP adjacency, an implementation specific so-called hash function
+<t>A BIER-TE "Equal Cost Multipath" (ECMP()) adjacency as shown in <xref target="adjacencies"/>
+for BIFT-index 7 has a list of two or more non-ECMP adjacencies as parameters and an optional
+seed parameter. When a BIER-TE packet is copied
+onto such an ECMP() adjacency, an implementation specific so-called hash function
 will select one out of the list's adjacencies to which the packet is forwarded.
 If the packet's encapsulation contains an entropy field, the entropy field SHOULD
 be respected; two packets with the same value of the entropy field SHOULD be sent on
@@ -898,25 +936,25 @@ that are to be used with BIER-TE BIFTs.</t>
 
 <t>With MPLS, it is also possible to reuse the
 same SD space for both BIER-TE and BIER, so that the same SD has both a 
-BIER BIFT and corresponding range of BIFT-ids and a disjoint BIER-TE BIFT and non-overlapping range of BIFT-ids.</t>
+BIER BIFT with a corresponding range of BIFT-ids and disjoint BIER-TE BIFTs with a non-overlapping range of BIFT-ids.</t>
 
 <t>When a fixed mapping from BSL, SD and SI to BIFT-id is used which does
 not explicitly partition the BIFT-id space between BIER and BIER-TE,
 such as proposed for non-MPLS forwarding with <xref target="RFC8296"/> encapsulation
 in <xref target="I-D.ietf-bier-non-mpls-bift-encoding"/> 
-revision 04, section 5., then it is necessary to allocate disjoint SDs to BIER
-and BIER-TE BIFT so that both can be addressed by the BIFT-ids. The encoding
+revision 04, section 5, then it is necessary to allocate disjoint SDs to BIER
+and BIER-TE BIFTs so that both can be addressed by the BIFT-ids. The encoding
 proposed in section 6. of the same document does not statically encode BSL
 or SD into the BIFT-id, but allows for a mapping, and hence could provide for
 the same freedom as when MPLS is being used (same or different SD for BIER/BIER-TE).</t>
 
-<t>"forward_routed" requires an encapsulation that permits to direct unicast encapsulated BIER-TE packets to a specific interface address on a target BFR. With MPLS encapsulation, this can
+<t>forward_routed() requires an encapsulation that permits to direct unicast encapsulated BIER-TE packets to a specific interface address on a target BFR. With MPLS encapsulation, this can
 simply be done via a label stack with that addresses label as the top label - followed
 by the label assigned to the (BSL,SD,SI) BitString.
 With non-MPLS encapsulation, some form of IP encapsulation would be required (for example IP/GRE).
 </t>
 
-<t>The encapsulation used for "forward_routed" adjacencies can equally support
+<t>The encapsulation used for forward_routed() adjacencies can equally support
 existing advanced adjacency information such as "loose source routes" via e.g. MPLS
 label stacks or appropriate header extensions (e.g. for IPv6).</t>
 
@@ -966,8 +1004,8 @@ bits set that this BFR wants to route across BFR-NBR. [2] clears
 all other bits in PacketCopy->BitString, and [1] clears those bits from
 Packet->BitString after the first PacketCopy.</t>
 
-<t>In BIER-TE, a BFR-NBR is an adjacency, forward_connected, forward_routed
-or local_decap. There is no need for [2] to suppress duplicates in the way
+<t>In BIER-TE, a BFR-NBR in this pseudocode is an adjacency, forward_connected(), forward_routed()
+or local_decap(). There is no need for [2] to suppress duplicates in the way
 BIER does because in general, different BP would never have the same
 adjacency. If a BIER-TE controller actually finds some optimization in
 which this would be desirable, then the controller is also responsible to
@@ -986,23 +1024,23 @@ ensure that only one of those bits is set in any Packet->BitString, unless
   is performed by [2].</t>
 </list></t>
 
-<t>This Forwarding Pseudocode can support the REQUIRED BIER-TE forwarding
-functions (see <xref target="requirements"/>), forward_connected,
-forward_routed() and local decap, but not the RECOMMENDED functions DNC flag
-and multiple adjacencies per bit nor the OPTIONAL function, ECMP adjacencies.
+<t>This Forwarding Pseudocode can support the required BIER-TE forwarding
+functions (see <xref target="requirements"/>), forward_connected(),
+forward_routed() and local_decap(), but not the recommended functions DNC flag
+and multiple adjacencies per bit nor the optional function, ECMP() adjacencies.
 The DNC flag cannot be supported when using only [1] to mask bits.</t>
 
 <t>The modified and expanded Forwarding Pseudocode in <xref target="pseudocode-picture"/> specifies how to
 support all BIER-TE forwarding functions (required, recommended and optional):
 <list style="symbols">
-    <t>This pseudocode eliminates per-bit F-BM, therefore reducing the size of BIFT state by BitStringLength^2*SI and eliminating the need for per-packet-copy BitString operation except for adjacencies with the DNC flag set:
+    <t>This pseudocode eliminates per-bit F-BM, therefore reducing the size of BIFT state by BSL^2*SI and eliminating the need for per-packet-copy BitString masking operations except for adjacencies with the DNC flag set:
     <list style="symbols">
         <t>AdjacentBits[SI] are bit positions with a non-empty list of adjacencies in this BFR BIFT. This can be computed whenever the BIER-TE Controller updates (add/removes) adjacencies in the BIFT.</t>
         <t>The BFR needs to create packet copies for these adjacent bits when they are set in the packets BitString. This set of bits is calculated in PktAdjacentBits.</t>
         <t>All bit positions to which the BFR creates copies have to be cleared in packet copies to avoid loops. This is done by masking the BitString of the packet with ~AdjacentBits[SI]. When an adjacency has DNC set, this bit position is set again only for the packet copy towards that bit position.</t>
     </list></t>
     <t>BIFT entries may contain more than one adjacency in support of specific configurations such as <xref target="hubnspoke"/>. The code therefore includes a loop over these adjacencies.</t>
-    <t>The ECMP adjacency is shown. Its parameters are a seed and a ListOfAdjacencies from which one is picked.</t>
+    <t>The ECMP() adjacency is shown. Its parameters are a seed and a ListOfAdjacencies from which one is picked.</t>
     <t>The forward_connected(), forward_routed(), local_decap() adjacencies are shown with their parameters.</t>
 </list></t>
 
@@ -1046,8 +1084,6 @@ support all BIER-TE forwarding functions (required, recommended and optional):
  }
 ]]></artwork></figure>
 
-
-
   </section>
   <!-- pseudocode -->
 
@@ -1055,10 +1091,10 @@ support all BIER-TE forwarding functions (required, recommended and optional):
 
 <t>[RFC Editor: remove this section.]</t>
 
-<t>THIS SECTION TO BE REMOVED IN RFC BECAUSE IT WAS SUPERCEEDED BY SECTION 1.1 EXAMPLE - UNLESS REVIEWERS CHIME IN AND EXPRESS DESIRE TO KEEP THIS ADDITIONAL EXAMPLE SECTION. ALVARO RETANA DID NOT MIND ANOTHER EXAMPLE.</t>
+<t>THIS SECTION TO BE REMOVED IN RFC BECAUSE IT WAS SUPERSEDED BY SECTION 1.1 EXAMPLE - IN CASE FINAL REVIES FIND A GOOD REASON TO KEEP IT, BUT DOESN'T SEEM TO SHOW IMPORTANT NEW STUFF OVER INITIAL EXAMPLES.</t>
 
 <t>Step-by-step example of basic BIER-TE forwarding. This example does not
-use ECMP or forward_routed() adjacencies nor does it try to minimize
+use ECMP() or forward_routed() adjacencies nor does it try to minimize
 the number of required BitPositions for the topology.</t>
 
 <figure anchor="forwarding-example" title="BIER-TE Forwarding Example">
@@ -1138,7 +1174,7 @@ clears both p7 and p8 before sending.</t>
 
 <t>BFER1 sees a BitString of p5,p10,p11,p12.
 For those BPs, it only has an adjacency for p11.
-p11 is a "local_decap" adjacency installed
+p11 is a local_decap() adjacency installed
 by the BIER-TE Controller to receive a copy of the BIER
 packet - dispose of the BIER header and pass the payload to IP multicast.
 IP multicast will then forward the packet out to LAN2 because
@@ -1155,21 +1191,21 @@ accordingly.</t>
 <t>BFR that support BIER-TE and BIER MUST support configuration that enables
 BIER-TE instead of (non-TE) BIER forwarding rules for all BIFT of one or more
 BIER sub-domains. Every BP in a BIER-TE BIFT MUST support to have
-zero or one adjacency. BIER-TE forwarding MUST support the adjacency types forward_connected() with the DNC flag not set, forward_routed() and local_decap.
-As explained in <xref target="pseudocode"/>, these REQUIRED BIER-TE forwarding functions
-can be implementeded via the same Forwarding Pseudocode as BIER forwarding except for
+zero or one adjacency. BIER-TE forwarding MUST support the adjacency types forward_connected() with the DNC flag not set, forward_routed() and local_decap().
+As explained in <xref target="pseudocode"/>, these required BIER-TE forwarding functions
+can be implemented via the same Forwarding Pseudocode as BIER forwarding except for
 one modification (skipping one masking with F-BM).</t>
 
 <t>BIER-TE forwarding SHOULD support forward_connected() adjacencies with a set DNC flag,
 as this is highly useful to save bits in rings (see <xref target="rings"/>).</t>
 
 <t>BIER-TE forwarding SHOULD support more than one adjacency on a bit.
-This allows to save bits in hub&amp;spoke scenarios (see <xref target="hubnspoke"/>).</t>
+This allows to save bits in hub and spoke scenarios (see <xref target="hubnspoke"/>).</t>
 
-<t>BIER-TE forwarding MAY support ECMP adjacencies to save bits in ECMP
+<t>BIER-TE forwarding MAY support ECMP() adjacencies to save bits in ECMP
 scenarios, see <xref target="ecmp"/> for an example.
-This is a MAY requirement, because the deployment importance of ECMP adjacencies for BIER-TE
-is unclear as one can also leverage ECMP of the routing underlay via forwarded_routed
+This is an optional requirement, because for ECMP deployments using BIER-TE
+one can also leverage ECMP of the routing underlay via forwarded_routed
 adjacencies and/or might prefer to have more explicit control of the path
 chosen via explicit BP/adjacencies for each ECMP path alternative.</t>
 
@@ -1191,8 +1227,8 @@ topologies with fewer bit positions.</t>
 
     <section anchor="p2p-links" title="P2P Links">
 
-<t>On a P2P link that connects two BFR, the same bit position can be used on
-both BFR for the adjacency to the neighboring BFR. A P2P link requires therefore
+<t>On a P2P link that connects two BFRs, the same bit position can be used on
+both BFRs for the adjacency to the neighboring BFR. A P2P link requires therefore
 only one bit position.</t>
 
     </section>
@@ -1200,7 +1236,7 @@ only one bit position.</t>
 
     <section anchor="bfer" title="BFER">
 
-<t>Every non-Leaf BFER is given a unique bit position with a local_decap adjacency.</t>
+<t>Every non-Leaf BFER is given a unique bit position with a local_decap() adjacency.</t>
 
     </section>
     <!-- bfer -->
@@ -1243,7 +1279,7 @@ topologies.</t>
 
 <t>The possible exception from this leaf-BFER bit position optimization can be cases where the bit position on the prior BIER-TE BFR (which created the packet copy for the leaf-BFER in question) is populated with multiple adjacencies as an optimization, such as in <xref target="lans"/> or <xref target="hubnspoke"/>. With either of these two optimizations, the sender of the packet could only control explicitly whether the packet was to be decapsulated on the leaf-BFER in question, if the leaf-BFER has a unique bit position for its local_decap() adjacency.</t>
 
-<t>However, if the bit position is shared across leaf-BFER, and packets are therefore decapsulated potentially unnecessarily, this may still be appropriate if the decapsulated payload of the BIER-TE packet does indicate whether or not the packet needs to be further processed/received. This is typically true for example if the payload is IP multicast because IP multicast on a BFER would know the membership state of the IP multicast paylod and be able to discard it if the packet was delivered unnecessarily by the BIER-TE layer. If the payload has no such membership indication, and the BFIR wants to have explicit control about which BFER are to receive and decapsulate a packet, then these two optimizations can not be used together with shared bit positions optimization for leaf-BFER.</t>
+<t>However, if the bit position is shared across leaf-BFER, and packets are therefore decapsulated potentially unnecessarily, this may still be appropriate if the decapsulated payload of the BIER-TE packet does indicate whether or not the packet needs to be further processed/received. This is typically true for example if the payload is IP multicast because IP multicast on a BFER would know the membership state of the IP multicast payload and be able to discard it if the packet was delivered unnecessarily by the BIER-TE layer. If the payload has no such membership indication, and the BFIR wants to have explicit control about which BFER are to receive and decapsulate a packet, then these two optimizations can not be used together with shared bit positions optimization for leaf-BFER.</t>
 
     </section>
     <!-- leaf-bfer -->
@@ -1355,7 +1391,7 @@ ring up to L1.</t>
 
 <t>[RFC-Editor: A reviewer (Lars Eggert) noted that the infinite "to use" in the following sentence is not correct. The same was also noted for several other similar instances. The following URL seems to indicate though that this is a per-case decision, which seems undefined: https://writingcenter.gmu.edu/guides/choosing-between-infinitive-and-gerund-to-do-or-doing. What exactly should be done about this ?].</t>
 
-<t>An ECMP adjacency allows to use just one BP to deliver packets
+<t>An ECMP() adjacency allows to use just one BP to deliver packets
 to one one of N adjacencies instead of one BP for each adjacency. 
 In the common example case <xref target="ecmp-picture"/>,
 a link-bundle of three links L1,L2,L3 connects BFR1 and BFR2, and
@@ -1392,7 +1428,7 @@ is sufficient for implementations to document their freely chosen
 ECMP algorithm.
 <xref target="ecmp-algo-picture"/> shows an example ECMP algorithm,
 and would double as its documentation: A BIER-TE controller could
-determine which adjacency is choosen based on the seed and adjacencies parameters
+determine which adjacency is chosen based on the seed and adjacencies parameters
 and the packet entropy.</t>
 
 <figure anchor="ecmp-algo-picture" title="ECMP algorithm Example">
@@ -1479,8 +1515,8 @@ L31 and BFR6.</t>
 
 <t>This issue in BFR2/BFR3 is called polarization. It results from the
 re-use of the same hash function across multiple consecutive hops in
-topologies like these.  To resolve this issue, the ECMP adjacency on BFR1 
-can be set up with a different seed2 than the ECMP adjacencies on BFR2/BFR3.
+topologies like these.  To resolve this issue, the ECMP() adjacency on BFR1 
+can be set up with a different seed2 than the ECMP() adjacencies on BFR2/BFR3.
 BFR2/BFR3 can use the same hash because packets will not sequentially
 pass across both of them. Therefore, they can also use the same BP 0:7.</t>
 
@@ -1555,7 +1591,7 @@ with duplicates or loops that do not also exist when every adjacency has
 a unique BP. Instead, the challenge when reusing BP is whether it
 allows to still achieve the desired Tree Engineering goals.</t>
 
-<t>BP cannot be reused across two BFR that would need to be passed
+<t>BP cannot be reused across two BFRs that would need to be passed
 sequentially for some path: The first BFR will clear the BP, so those
 paths cannot be built. BP can be set across BFR that would (A) only
 occur across different paths or (B) across different branches of the same tree.</t>
@@ -1565,7 +1601,7 @@ where BP 0:7, BP 0:8 and BP 0:9 are each reused across multiple BFRs because
 a single packet/path would never be able to reach more than one BFR 
 sharing the same BP.</t>
 
-<t>Assume the example was changed: BFR1 has no ECMP adjacency for BP 0:6,
+<t>Assume the example was changed: BFR1 has no ECMP() adjacency for BP 0:6,
 but instead BP 0:5 with forward_connected() to BFR2 and BP 0:6 with
 forward_connected() to BFR3.  Packets with both BP 0:5 and BP 0:6 would
 now be able to reach both BFR2 and BFR3 and the still existing re-use
@@ -1573,7 +1609,7 @@ of BP 0:7 between BFR2 and BFR3 is a case of (B) where reuse of BP
 is perfect because it does not limit the set of useful path choices:</t>
 
 <t>If instead of reusing BP 0:7, BFR3 used a separate BP 0:10 for its
-ECMP adjacency, no useful additional path steering options would be enabled.
+ECMP() adjacency, no useful additional path steering options would be enabled.
 If duplicates at BFR10 where undesirable, this would be done by not
 setting BP 0:5 and BP 0:6 for the same packet. If the duplicates where
 desirable (e.g.: resilient transmission), the additional BP 0:10
@@ -1626,14 +1662,14 @@ neighbor requires a forward_connected() BP and every BFER requires a local_decap
   <t>A LAN with N BFR needs at most N BP (one for each BFR). It only needs one BP for all those BFR that are not redundantly connected to multiple LANs (<xref target="lans"/>).</t>
   <t>A hub with p2p connections to multiple non-leaf-BFER spokes can share one BP to all spokes if traffic can be flooded to all spokes, e.g.: because of no bandwidth concerns or dense receiver sets (<xref target="hubnspoke"/>).</t>
   <t>Rings of BFR can be built with just two BP (one for each direction) except for BFR with multiple ring connections - similar to LANs (<xref target="rings"/>).</t>
-  <t>ECMP adjacencies to N neighbors can replace N BP with 1 BP. Multihop ECMP can avoid polarization through different seeds of the ECMP algorithm (<xref target="ecmp"/>).</t>
+  <t>ECMP() adjacencies to N neighbors can replace N BP with 1 BP. Multihop ECMP can avoid polarization through different seeds of the ECMP algorithm (<xref target="ecmp"/>).</t>
   <t>Forward_routed() adjacencies allow to "tunnel" across non-BIER-TE capable routers and across BIER-TE capable routers where no traffic-steering or replications are required (<xref target="routed"/>).</t>
   <t>BP can generally be reused across a set of nodes where it can be guaranteed that no path will
 ever need to traverse more than one node of the set. Depending on scenario, this may limit the feasible path steering options (<xref target="reuse"/>).</t>
 
 </list></t>
 
-<t>Note that the described list of optimizations is not exhaustive. Especially when the set of required path steering choices is limited and the set of possible subsets of BFERs that should be able to receive traffic is limited, further optimizations of BP are possible. The hub &amp; spoke optimization is a simple example of such traffic pattern dependent optimizations.</t>
+<t>Note that the described list of optimizations is not exhaustive. Especially when the set of required path steering choices is limited and the set of possible subsets of BFERs that should be able to receive traffic is limited, further optimizations of BP are possible. The hub and spoke optimization is a simple example of such traffic pattern dependent optimizations.</t>
 
       </section>
 
@@ -1783,7 +1819,7 @@ them.</t>
 <t>"Desired" topology because it depends on the physical topology, and
 on the desire of the operator to allow for explicit path steering across
 every single hop (which requires more bits), or reducing the number of required
-bits by exploiting optimizations such as unicast (forward_routed), ECMP or flood
+bits by exploiting optimizations such as unicast (forward_routed()), ECMP() or flood
 (DNC) over "uninteresting" sub-parts of the topology - e.g. parts where different
 trees do not need to take different paths due to path steering reasons.</t>
 
@@ -1801,13 +1837,13 @@ will allow to express desirable path steering alternatives.</t>
 the BFIR-id field of the BIER header to be set to a particular value.
 However, other parts of a BIER-TE deployment may need a BFR-id, specifically
 multicast flow overlay signaling and multicast flow overlay packet disposition,
-and in that case BFR need to also have BFR-ids for BIER-TE SDs.</t>
+and in that case BFRs need to also have BFR-ids for BIER-TE SDs.</t>
 
-<t>For example, for BIER overlay signaling, BFIR need to have a BFR-id, because this
+<t>For example, for BIER overlay signaling, BFIRs need to have a BFR-id, because this
 BFIR BFR-id is carried in the BFIR-id field of the BIER header to indicate
 to the overlay signaling on the receiving BFER which BFIR originated the packet.</t>
 
-<t>In BIER, BFR-id = SI * 2^BSL + (BP - 1), such that the SI and BP of a BFER
+<t>In BIER, BFR-id = SI * BSL + BP, such that the SI and BP of a BFER
 can be calculated from the BFR-id and vice versa. This also means
 that every BFR with a BFR-id has a reserved BP in an SI, even if
 that is not necessary for BIER forwarding, because the BFR may
@@ -1815,15 +1851,15 @@ never be a BFER but only a BFIR.</t>
 
 <t>In BIER-TE, for a non-leaf BFER, there is usually a single BP for that BFER with a
 local_decap() adjacency on the BFER. The BFR-id for such a BFER can therefore
-be determined using the same procedure as in (non-TE) BIER: BFR-id = SI * BitStringLength + (BP - 1).</t>
+be determined using the same procedure as in (non-TE) BIER: BFR-id = SI * BSL + BP.</t>
 
 <t>As explained in <xref target="leaf-bfer"/>, leaf BFERs do not need such
-a unique local_decap() adjacency. Likewise, BFIR who are not also BFER
-may not have a unique local_decap() adjacency either. For all those BFIR
-and (leaf) BFER, the controller needs to determine unique BFR-ids that
+a unique local_decap() adjacency. Likewise, BFIRs that are not also BFERs
+may not have a unique local_decap() adjacency either. For all those BFIRs
+and (leaf) BFERs, the controller needs to determine unique BFR-ids that
 do not collide with the BFR-ids derived from the non-leaf BFER local_decap() BPs.</t>
 
-<t>While this document defines no requirements how to allocate such BFR-id,
+<t>While this document defines no requirements on how to allocate such BFR-id,
 a simple option is to derive it from the (SI,BP) of an adjacency that is
 unique to the BFR in question. For a BFIR this can be the first adjacency
 only populated on this BFIR, for a leaf-BFER, this could be the first BP
@@ -1835,7 +1871,7 @@ with an adjacency towards that BFER.</t>
 
 <t>In BIER, applications of the flow overlay on a BFIR can calculate the (SI,BP) of a
 BFER from the BFR-id of the BFER and can therefore easily determine the BitStrings
-for a BIER packet to a set of BFER with known BFR-ids.</t>
+for a BIER packet to a set of BFERs with known BFR-ids.</t>
 
 <t>In BIER-TE this mapping needs to be equally supported for flow overlays.
 This section outlines two core options, based on what type of Tree Engineering
@@ -1853,7 +1889,7 @@ because they may need to change.  Steiner trees are examples of interdependent b
 <t>If "independent branches" are used, the BIER-TE Controller 
 can signal to the BFIR flow overlay for every BFER an SI:BitString that
 represents the branch to that BFER.  The flow overlay on the BIFR can then independently
-of the controller calculate the SI:BitString for all desired BFER by OR'ing their BitStrings.
+of the controller calculate the SI:BitString for all desired BFERs by OR'ing their BitStrings.
 This allows for flow overlay applications to operate independently of the controller
 whenever it needs to determine which subset of BFERs need to receive a particular packet.</t>
 
@@ -1866,11 +1902,11 @@ by other traffic as part of traffic engineering goals (e.g.: re-optimization of 
 priority traffic flows). Interactions between such BFIR applications and the BIER-TE Controller
 do therefore need to support dynamic updates to the SI:BitStrings.</t>
 
-<t>Communications between the BFIR flow overlay and BIER-TE controller
-requires some way to identify BFER. If BFR-ids are used in the deployment, as
+<t>Communications between the BFIR flow overlay and the BIER-TE controller
+requires some way to identify the BFER. If BFR-ids are used in the deployment, as
 outlined in <xref target="bfr-id"/>, then those are the natural BFR identifier. If
 BFR-ids are not used, then any other unique identifier, such as the BFR-prefix
-of the BFR as of <xref target="RFC8279"/> could be used.</t>
+of the BFR (<xref target="RFC8279"/>) could be used.</t>
 
 
     </section>
@@ -2001,7 +2037,7 @@ same area as in the BFIR, these four bits are not used.</t>
     <section anchor="summary" title="Summary">
 
 <t>BIER-TE can, like BIER, support multiple SIs within a sub-domain. This allows
-to apply the mapping BFR-id = SI:BP = SI * 2^BSL + (BP - 1). This allows to re-use
+to apply the mapping BFR-id = SI * BSL + BP. This allows to re-use
 the BIER architecture concept of BFR-id and therefore minimize BIER-TE specific functions in possible
 BIER layer control plane mechanisms with BIER-TE, including flow overlay methods and BIER header fields.</t>
 
@@ -2023,47 +2059,6 @@ bits required.</t>
 </section>
   <!-- controller-ops -->
 
-  <section anchor="SR" title="BIER-TE and Segment Routing">
-
-<t>SR (xref target="RFC8402"/>) aims to enable lightweight path steering
-via loose source routing. Compared to its more heavy-weight predecessor RSVP-TE,
-SR does for example not require per-path signaling to each of these hops.</t>
-
-<t>BIER-TE supports the same design philosophy for multicast.
-Like in SR, it relies on source-routing -
-via the definition of a BitString. Like SR, it only requires to consider
-the "hops" on which either replication has to happen, or across which the
-traffic should be steered (even without replication).  Any other hops can
-be skipped via the use of routed adjacencies.</t>
-
-<t>BIER-TE bit position (BP) can be understood as the BIER-TE equivalent of
-"forwarding segments" in SR, but they have a different scope than SR forwarding
-segments. Whereas forwarding segments in SR are global or local, BPs in BIER-TE
-have a scope that is the group of BFR(s) that have adjacencies for this BP in
-their BIFT. This can be called "adjacency" scoped forwarding segments.</t>
-
-<t>Adjacency scope could be global, but then every BFR would need an adjacency
-for this BP, for example a forward_routed() adjacency with encapsulation to
-the global SR SID of the destination. Such a BP would always result in ingress
-replication though (as in <xref target="RFC7988"/>). The first BFR encountering this BP would directly
-replicate to it. Only by using non-global adjacency scope for BPs can 
-traffic be steered and replicated on non-ingress BFR.</t>
-
-<t>SR can naturally be combined with BIER-TE and help to optimize it. For example,
-instead of defining bit positions for non-replicating hops, it is equally
-possible to use segment routing encapsulations (e.g. SR-MPLS label stacks)
-for the encapsulation of "forward_routed" adjacencies.</t>
-
-<t>Note that (non-TE) BIER itself can also be seen to be similar to SR. BIER BPs act
-as global destination Node-SIDs and the BIER BitString is simply a highly optimized
-mechanism to indicate multiple such SIDs and let the network take care of effectively
-replicating the packet hop-by-hop to each destination Node-SID.  What BIER does not allow is to
-indicate intermediate hops, or in terms of SR the ability to indicate a sequence of SID
-to reach the destination. This is what BIER-TE and its adjacency scoped BP enables.</t>
-
-  </section>
-  <!-- SR -->
-
   <section anchor="security" title="Security Considerations">
 
 <t>If <xref target="RFC8296"/> is used, BIER-TE shares its security considerations.</t>
@@ -2073,7 +2068,7 @@ the following overriding or additional considerations.</t>
 
 <t>BIER-TE forwarding explicitly supports unicast "tunneling" of BIER packets via forward_routed()
 adjacencies. The BIER domain security model is based on a subset of interfaces on a BFR
-that connect to other BFR of the same BIER domain. For BIER-TE, this security model equally applies
+that connect to other BFRs of the same BIER domain. For BIER-TE, this security model equally applies
 to such unicast "tunneled" BIER packets. This does not only include the need to filter
 received unicast "tunneled" BIER packets to prohibit injection of such "tunneled" BIER
 packets from outside the BIER domain, but also prohibiting forward_routed() adjacencies
@@ -2090,8 +2085,8 @@ against  the results of the routing protocol, enabling DoS attacks against
 paths or the addressing (BFR-id, BFR-prefixes) used by BIER.</t>
 
 <t>The reference model for the BIER-TE layer control plane is a BIER-TE controller.
-When such a controller is used, impairment of individual BFR in a domain causes
-no impairment of the BIER-TE control plane on other BFR. If a routing
+When such a controller is used, impairment of an individual BFR in a domain causes
+no impairment of the BIER-TE control plane on other BFRs. If a routing
 protocol is used to support forward_routed() adjacencies, then this is still an
 attack vector as in BIER, but only for BIER-TE forward_routed() adjacencies, and
 not other adjacencies.</t>
@@ -2152,6 +2147,18 @@ protect the active production process from such configuration attacks.</t>
   <t>draft-ietf-bier-te-arch:
   <list>
       <t>12:</t>
+      <t>AD review Alvaro Retana.</t>
+      <t>Various textual/editorial nits including adding () to all instances of forwarding adjacency name instances.</t>
+      <t>3.1 Added new paragraph outlining possible use of BGP as RR in BIER-TE controller
+         as core of multicast flow overlay component of BIER-TE.</t>
+      <t>3.2 added xref's to relevant sections to the listed control plane points.</t>
+      <t>4.1 rewrote paragraphs of 4.1 leading up to Figure 4. to eliminate any confusion in
+         how the BIFT work and how it compares to the notions in rfc8279, as well as better
+         linking it to the Pseudocode.</t>
+      <t>Moved SR section into appendix.</t>
+
+
+
       <t>TSV review Martin Duke.</t>
       <t>Text/editorial nits.</t>
       <t>4.4 improved text describing handling of F-BM.</t>
@@ -2159,7 +2166,6 @@ protect the active production process from such configuration attacks.</t>
       <t>Various text/editorial nits.</t>
       <t>Added notion that BitStrings represent loop free tree for packet to abstract and intro.</t>
       <t>Various text nit and editorial improvements.</t>
-      <t>Fixed broken SI*BSL formulas to SI * 2^BSL.</t>
       <t>Fixed some BFR-id field -> BFIR-id field mistakes.</t>
       <t>Capitalized NETCONF/RESTCONF/YANG, added RFC references.</t>
       <t>Improved Figure 16 with explicitly two links into BFR3 and explanatory text.</t>
@@ -2381,6 +2387,7 @@ protect the active production process from such configuration attacks.</t>
 
 <references title="Informative References">
       &RFC4253;
+      &RFC4456;
       &RFC4655;
       &RFC5440;
       &RFC6241;
@@ -2395,6 +2402,7 @@ protect the active production process from such configuration attacks.</t>
       &RFC8401;
       &RFC8402;
       &RFC8444;
+      &RFC8556;
 <!--
       &RFC2205;
       &RFC2212;
@@ -2456,6 +2464,48 @@ protect the active production process from such configuration attacks.</t>
 
       <!---->
 </references>
+
+
+  <section anchor="SR" title="BIER-TE and Segment Routing">
+
+<t>SR (xref target="RFC8402"/>) aims to enable lightweight path steering
+via loose source routing. Compared to its more heavy-weight predecessor RSVP-TE,
+SR does for example not require per-path signaling to each of these hops.</t>
+
+<t>BIER-TE supports the same design philosophy for multicast.
+Like in SR, it relies on source-routing -
+via the definition of a BitString. Like SR, it only requires to consider
+the "hops" on which either replication has to happen, or across which the
+traffic should be steered (even without replication).  Any other hops can
+be skipped via the use of routed adjacencies.</t>
+
+<t>BIER-TE bit position (BP) can be understood as the BIER-TE equivalent of
+"forwarding segments" in SR, but they have a different scope than SR forwarding
+segments. Whereas forwarding segments in SR are global or local, BPs in BIER-TE
+have a scope that is the group of BFR(s) that have adjacencies for this BP in
+their BIFT. This can be called "adjacency" scoped forwarding segments.</t>
+
+<t>Adjacency scope could be global, but then every BFR would need an adjacency
+for this BP, for example a forward_routed() adjacency with encapsulation to
+the global SR SID of the destination. Such a BP would always result in ingress
+replication though (as in <xref target="RFC7988"/>). The first BFR encountering this BP would directly
+replicate to it. Only by using non-global adjacency scope for BPs can 
+traffic be steered and replicated on non-ingress BFR.</t>
+
+<t>SR can naturally be combined with BIER-TE and help to optimize it. For example,
+instead of defining bit positions for non-replicating hops, it is equally
+possible to use segment routing encapsulations (e.g. SR-MPLS label stacks)
+for the encapsulation of "forward_routed" adjacencies.</t>
+
+<t>Note that (non-TE) BIER itself can also be seen to be similar to SR. BIER BPs act
+as global destination Node-SIDs and the BIER BitString is simply a highly optimized
+mechanism to indicate multiple such SIDs and let the network take care of effectively
+replicating the packet hop-by-hop to each destination Node-SID.  What BIER does not allow is to
+indicate intermediate hops, or in terms of SR the ability to indicate a sequence of SID
+to reach the destination. This is what BIER-TE and its adjacency scoped BP enables.</t>
+
+  </section>
+  <!-- SR -->
 
 </back>
 </rfc>
