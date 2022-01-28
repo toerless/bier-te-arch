@@ -1307,10 +1307,12 @@ ring up to L1.</t>
 
     <section anchor="ecmp" title="Equal Cost MultiPath (ECMP)">
 
-<t>The ECMP adjacency allows to use just one BP per link
-bundle between two BFRs instead of one BP for each p2p member
-link of that link bundle. In <xref target="ecmp-picture"/>, one BP
-is used across L1,L2,L3.</t>
+<t>An ECMP adjacency allows to use just one BP to deliver packets
+to one one of N adjacencies instead of one BP for each adjacency. 
+In the common example case <xref target="ecmp-picture"/>,
+a link-bundle of three links L1,L2,L3 connects BFR1 and BFR2, and
+only one BP is used instead of three BP to deliver packets from
+BFR1 to BFR2.</t>
 
 <figure anchor="ecmp-picture" title="ECMP Example">
 <artwork align="left"><![CDATA[
@@ -1339,8 +1341,11 @@ is used across L1,L2,L3.</t>
 
 <t>This document does not standardize any ECMP algorithm because it
 is sufficient for implementations to document their freely chosen 
-ECMP algorithm. This allows the BIER-TE Controller to calculate ECMP
-paths and seeds. <xref target="ecmp-algo-picture"/> shows an example ECMP algorithm:</t>
+ECMP algorithm.
+<xref target="ecmp-algo-picture"/> shows an example ECMP algorithm,
+and would double as its documentation: A BIER-TE controller could
+determine which adjacency is choosen based on the seed and adjacencies parameters
+and the packet entropy.</t>
 
 <figure anchor="ecmp-algo-picture" title="ECMP algorithm Example">
 <artwork align="left"><![CDATA[
@@ -1923,13 +1928,10 @@ packets from any BFIR via any combination of ingress area a/b BFR and egress are
  a/b BFR into a specific target area. These bits are then set up with the right
  forward_routed() adjacencies on the BFIR and area edge BFR:</t>
 
-<t>On all BFIRs in an area j|j=2...6, bia in each BIFT:SI is populated with the same
+<t>On all BFIRs in an area j|j=1...6, bia in each BIFT:SI is populated with the same
 forward_routed(BFRja), and bib with forward_routed(BFRjb). On all area
-edge BFR, bea in BIFT:SI=k|k=2...6 is populated with forward_routed(BFRka) and
-beb in BIFT:SI=k with forward_routed(BFRkb). For this setup we do not consider
-area 1 because we assume the BIER-TE setup is just for sending traffic from
-area 1 into area 2...6, for example bcause the broadcast headends are
-in area 1 for an IPTV BIER-TE setup.</t>
+edge BFR, bea in BIFT:SI=k|k=1...6 is populated with forward_routed(BFRka) and
+beb in BIFT:SI=k with forward_routed(BFRkb).</t>
 
 <t>For BIER-TE forwarding of a packet to a subset of BFERs across all areas,
 a BFIR would create at most 6 copies, with SI=1...SI=6, In each packet,
@@ -2082,14 +2084,18 @@ protect the active production process from such configuration attacks.</t>
   <section anchor="ack" title="Acknowledgements">
 
   <t>The authors would like to thank Greg Shepherd, Ijsbrand Wijnands, Neale Ranns, Dirk Trossen, Sandy Zheng, Lou Berger, Jeffrey Zhang, Carsten Borman and Wolfgang Braun for their reviews and suggestions.</t>
-  <t> Special thanks to IESG reviews by Alvaro Retana (responsible AD/RTG), Benjamin Kaduk (SEC).</t>
+  <t> Special thanks to Xuesong Geng for shepherding the document and for IESG review/suggestions by Alvaro Retana (responsible AD/RTG), Benjamin Kaduk (SEC), Tommy Pauly (TSV), Zaheduzzaman Sarker (TSV).</t>
   </section>
   <!-- ack -->
 
   <section anchor="changes" title="Change log [RFC Editor: Please remove]">
   <t>draft-ietf-bier-te-arch:
   <list>
-      <t>12:  IESG review Ben Kaduk (round 2):</t>
+      <t>12:</t>
+      <t>IESG review Zaheduzzaman Sarker (TSV).</t>
+      <t>5.1.7 Refined text explaining documentation of ECMP algorithm.</t>
+      <t>5.3.6.2. fixed range of areas/SI over which to build the example large network BPs - removed explanation of the large network shown to be only used for sources in area 1 (IPTV), because it was a stale explanation.</t>
+      <t>IESG review Ben Kaduk (round 2):</t>
       <t>4.4 Advanced pseudocode still had one wrong "~". Root cause seems to have been day 0 problem in pseudocode written for -01, "~" was inserted in the wrong one of two code lines. Also enhanced textual description and comments in pseudocode, changed variable name AdjacentBits to PktAdjacentBits to avoid confusion with AdjacentBits[SI].</t>
       <t>5.1.3 Rewrote last two paragraphs explaining the sharing of bit positions for lead-BFER hopefully better. Also detailled how it interacts with other optimizations and the type of payload BIER-TE packets may carry.</t>
       <t>4.4 (from Carsten Borman) changed spacing in pseudocode to be consistent. Fixed {VRF}, clarified pseudocode object syntax, typos.</t>

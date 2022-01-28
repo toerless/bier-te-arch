@@ -148,7 +148,7 @@ Internet-Draft                BIER-TE ARCH                  January 2022
    10. Change log [RFC Editor: Please remove]  . . . . . . . . . . .  48
    11. References  . . . . . . . . . . . . . . . . . . . . . . . . .  58
      11.1.  Normative References . . . . . . . . . . . . . . . . . .  58
-     11.2.  Informative References . . . . . . . . . . . . . . . . .  58
+     11.2.  Informative References . . . . . . . . . . . . . . . . .  59
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  61
 
 1.  Overview
@@ -1711,11 +1711,11 @@ Internet-Draft                BIER-TE ARCH                  January 2022
 
 5.1.7.  Equal Cost MultiPath (ECMP)
 
-   The ECMP adjacency allows to use just one BP per link bundle between
-   two BFRs instead of one BP for each p2p member link of that link
-   bundle.  In Figure 13, one BP is used across L1,L2,L3.
-
-
+   An ECMP adjacency allows to use just one BP to deliver packets to one
+   one of N adjacencies instead of one BP for each adjacency.  In the
+   common example case Figure 13, a link-bundle of three links L1,L2,L3
+   connects BFR1 and BFR2, and only one BP is used instead of three BP
+   to deliver packets from BFR1 to BFR2.
 
 
 
@@ -1764,8 +1764,10 @@ Internet-Draft                BIER-TE ARCH                  January 2022
 
    This document does not standardize any ECMP algorithm because it is
    sufficient for implementations to document their freely chosen ECMP
-   algorithm.  This allows the BIER-TE Controller to calculate ECMP
-   paths and seeds.  Figure 14 shows an example ECMP algorithm:
+   algorithm.  Figure 14 shows an example ECMP algorithm, and would
+   double as its documentation: A BIER-TE controller could determine
+   which adjacency is choosen based on the seed and adjacencies
+   parameters and the packet entropy.
 
 
       forward(packet, ECMP(adj(0), adj(1),... adj(N-1), seed)):
@@ -1784,8 +1786,6 @@ Internet-Draft                BIER-TE ARCH                  January 2022
 
                     BFR1         (BFIR)
                   /L11  \L12
-                 /       \
-             BFR2         BFR3
 
 
 
@@ -1794,6 +1794,8 @@ Eckert, et al.            Expires July 15, 2022                [Page 32]
 Internet-Draft                BIER-TE ARCH                  January 2022
 
 
+                 /       \
+             BFR2         BFR3
             /L21 \L22    /L31 \L32
            /      \     /      \
           BFR4  BFR5   BFR6  BFR7
@@ -1840,8 +1842,6 @@ Internet-Draft                BIER-TE ARCH                  January 2022
 
                       Figure 15: Polarization Example
 
-   Note that for the following discussion of ECMP, only the BIFT ECMP
-   adjacencies on BFR1, BFR2, BFR3 are relevant.  The re-use of BP
 
 
 
@@ -1850,6 +1850,8 @@ Eckert, et al.            Expires July 15, 2022                [Page 33]
 Internet-Draft                BIER-TE ARCH                  January 2022
 
 
+   Note that for the following discussion of ECMP, only the BIFT ECMP
+   adjacencies on BFR1, BFR2, BFR3 are relevant.  The re-use of BP
    across BFR in this example is further explained in Section 5.1.9
    below.
 
@@ -1896,8 +1898,6 @@ Internet-Draft                BIER-TE ARCH                  January 2022
                        Network Area 1
 
                Figure 16: Forward Routed Adjacencies Example
-
-
 
 
 
@@ -2470,14 +2470,11 @@ Internet-Draft                BIER-TE ARCH                  January 2022
    BFR into a specific target area.  These bits are then set up with the
    right forward_routed() adjacencies on the BFIR and area edge BFR:
 
-   On all BFIRs in an area j|j=2...6, bia in each BIFT:SI is populated
+   On all BFIRs in an area j|j=1...6, bia in each BIFT:SI is populated
    with the same forward_routed(BFRja), and bib with
    forward_routed(BFRjb).  On all area edge BFR, bea in
-   BIFT:SI=k|k=2...6 is populated with forward_routed(BFRka) and beb in
-   BIFT:SI=k with forward_routed(BFRkb).  For this setup we do not
-   consider area 1 because we assume the BIER-TE setup is just for
-   sending traffic from area 1 into area 2...6, for example bcause the
-   broadcast headends are in area 1 for an IPTV BIER-TE setup.
+   BIFT:SI=k|k=1...6 is populated with forward_routed(BFRka) and beb in
+   BIFT:SI=k with forward_routed(BFRkb).
 
    For BIER-TE forwarding of a packet to a subset of BFERs across all
    areas, a BFIR would create at most 6 copies, with SI=1...SI=6, In
@@ -2514,6 +2511,9 @@ Internet-Draft                BIER-TE ARCH                  January 2022
 
    BIER-TE supports the same design philosophy for multicast.  Like in
    SR, it relies on source-routing - via the definition of a BitString.
+   Like SR, it only requires to consider the "hops" on which either
+   replication has to happen, or across which the traffic should be
+
 
 
 
@@ -2522,8 +2522,6 @@ Eckert, et al.            Expires July 15, 2022                [Page 45]
 Internet-Draft                BIER-TE ARCH                  January 2022
 
 
-   Like SR, it only requires to consider the "hops" on which either
-   replication has to happen, or across which the traffic should be
    steered (even without replication).  Any other hops can be skipped
    via the use of routed adjacencies.
 
@@ -2570,6 +2568,8 @@ Internet-Draft                BIER-TE ARCH                  January 2022
    extensions for OSPF.  Attacking the protocols for the BIER routing
    underlay or (non-TE) BIER layer control plane, or impairment of any
    BFR in a domain may lead to successful attacks against the results of
+   the routing protocol, enabling DoS attacks against paths or the
+   addressing (BFR-id, BFR-prefixes) used by BIER.
 
 
 
@@ -2577,9 +2577,6 @@ Eckert, et al.            Expires July 15, 2022                [Page 46]
 
 Internet-Draft                BIER-TE ARCH                  January 2022
 
-
-   the routing protocol, enabling DoS attacks against paths or the
-   addressing (BFR-id, BFR-prefixes) used by BIER.
 
    The reference model for the BIER-TE layer control plane is a BIER-TE
    controller.  When such a controller is used, impairment of individual
@@ -2626,6 +2623,9 @@ Internet-Draft                BIER-TE ARCH                  January 2022
    manufacturing networks during e.g. plant reworking/repairs.  In these
    type of deployments, configuration changes could be locked out when
    the network is in production state and could only be (re-)enabled
+   through reverting the network/installation into non-production state.
+   Such security designs would not only allow to provide additional
+   layers of protection against configuration attacks, but would
 
 
 
@@ -2634,9 +2634,6 @@ Eckert, et al.            Expires July 15, 2022                [Page 47]
 Internet-Draft                BIER-TE ARCH                  January 2022
 
 
-   through reverting the network/installation into non-production state.
-   Such security designs would not only allow to provide additional
-   layers of protection against configuration attacks, but would
    foremost protect the active production process from such
    configuration attacks.
 
@@ -2650,14 +2647,26 @@ Internet-Draft                BIER-TE ARCH                  January 2022
    Neale Ranns, Dirk Trossen, Sandy Zheng, Lou Berger, Jeffrey Zhang,
    Carsten Borman and Wolfgang Braun for their reviews and suggestions.
 
-   Special thanks to IESG reviews by Alvaro Retana (responsible AD/RTG),
-   Benjamin Kaduk (SEC).
+   Special thanks to Xuesong Geng for shepherding the document and for
+   IESG review/suggestions by Alvaro Retana (responsible AD/RTG),
+   Benjamin Kaduk (SEC), Tommy Pauly (TSV), Zaheduzzaman Sarker (TSV).
 
 10.  Change log [RFC Editor: Please remove]
 
    draft-ietf-bier-te-arch:
 
-      12: IESG review Ben Kaduk (round 2):
+      12:
+
+      IESG review Zaheduzzaman Sarker (TSV).
+
+      5.1.7 Refined text explaining documentation of ECMP algorithm.
+
+      5.3.6.2. fixed range of areas/SI over which to build the example
+      large network BPs - removed explanation of the large network shown
+      to be only used for sources in area 1 (IPTV), because it was a
+      stale explanation.
+
+      IESG review Ben Kaduk (round 2):
 
       4.4 Advanced pseudocode still had one wrong "~".  Root cause seems
       to have been day 0 problem in pseudocode written for -01, "~" was
@@ -2671,6 +2680,16 @@ Internet-Draft                BIER-TE ARCH                  January 2022
       interacts with other optimizations and the type of payload BIER-TE
       packets may carry.
 
+
+
+
+
+
+Eckert, et al.            Expires July 15, 2022                [Page 48]
+
+Internet-Draft                BIER-TE ARCH                  January 2022
+
+
       4.4 (from Carsten Borman) changed spacing in pseudocode to be
       consistent.  Fixed {VRF}, clarified pseudocode object syntax,
       typos.
@@ -2682,13 +2701,6 @@ Internet-Draft                BIER-TE ARCH                  January 2022
 
       Added (non-TE) prefix in places where BIER by itsels had to be
       better disambiguated.
-
-
-
-Eckert, et al.            Expires July 15, 2022                [Page 48]
-
-Internet-Draft                BIER-TE ARCH                  January 2022
-
 
       enhanced text for hub-and-spoke to indicate we're only talking
       about hub to spoke traffic.
@@ -2725,6 +2737,15 @@ Internet-Draft                BIER-TE ARCH                  January 2022
       6.  Enhanced description of 4.3/encap considerations to better
           explain how BIER/BIER-TE can run together.
 
+
+
+
+
+Eckert, et al.            Expires July 15, 2022                [Page 49]
+
+Internet-Draft                BIER-TE ARCH                  January 2022
+
+
       Notation: Markers (a),(b),... at end of points are references from
       the review discussion with Alvaro to the changes made.
 
@@ -2738,13 +2759,6 @@ Internet-Draft                BIER-TE ARCH                  January 2022
 
       Abstract: Shortened.  Removed name explanation note (Tree
       Engineering), (a).
-
-
-
-Eckert, et al.            Expires July 15, 2022                [Page 49]
-
-Internet-Draft                BIER-TE ARCH                  January 2022
-
 
       1.  Introduction -> Overview: Moved important explanation
       paragraph from abstract to Introduction.  Fixed text, (a).
@@ -2780,6 +2794,14 @@ Internet-Draft                BIER-TE ARCH                  January 2022
 
       3.  (Components): Aligned component name and descriptions better
       with RFC8279.  Now describe exactly same three layers.  BIER layer
+
+
+
+Eckert, et al.            Expires July 15, 2022                [Page 50]
+
+Internet-Draft                BIER-TE ARCH                  January 2022
+
+
       constituted from BIER-TE control plane and BIER-TE forwarding
       plane.  BIER-TE controller is now simply component of BIER-TE
       control plane. (b).
@@ -2793,14 +2815,6 @@ Internet-Draft                BIER-TE ARCH                  January 2022
       RFC8729 mixes control and forwarding plane bullet points (this doc
       does not).  Merged text from old sections 2.2.1 and 2.2.3 into
       list. (b).
-
-
-
-
-Eckert, et al.            Expires July 15, 2022                [Page 50]
-
-Internet-Draft                BIER-TE ARCH                  January 2022
-
 
       3.2.1.  Expanded/improved explanation of BIER-TE Controller (b).
 
@@ -2834,6 +2848,16 @@ Internet-Draft                BIER-TE ARCH                  January 2022
       BIER-TE.  Added reference to I-D.ietf-bier-non-mpls-bift-encoding
       as a very helpful example. (f).
 
+
+
+
+
+
+Eckert, et al.            Expires July 15, 2022                [Page 51]
+
+Internet-Draft                BIER-TE ARCH                  January 2022
+
+
       4.3 Renamed title to "...Co-Existence with BIER" as this is what
       it is about and to help finding it from abstract/intro ("co-
       exist") (j).
@@ -2848,15 +2872,6 @@ Internet-Draft                BIER-TE ARCH                  January 2022
       TE forwarding, simply referring to it now as "mandatory" BIER-TE
       forwarding.  Cleaned up text to have requirements for different
       adjacencies in different paragraphs. (c).
-
-
-
-
-
-Eckert, et al.            Expires July 15, 2022                [Page 51]
-
-Internet-Draft                BIER-TE ARCH                  January 2022
-
 
       5.  Created new main section "BIER-TE Controller operational
       considerations", coalesced old sections 4., 5., 7. into this new
@@ -2892,6 +2907,13 @@ Internet-Draft                BIER-TE ARCH                  January 2022
 
 
 
+
+
+Eckert, et al.            Expires July 15, 2022                [Page 52]
+
+Internet-Draft                BIER-TE ARCH                  January 2022
+
+
       09: Incorporated fixes for feedback from Shepherd (Xuesong Geng).
 
       Added references for Bloom Filters and Rate Controlled Service
@@ -2904,15 +2926,6 @@ Internet-Draft                BIER-TE ARCH                  January 2022
       1.2 Improved explanation of BIER-TE topology, fixed terminology of
       graphs (BIER-TE topology is a directed graph where the edges are
       the adjacencies).
-
-
-
-
-
-Eckert, et al.            Expires July 15, 2022                [Page 52]
-
-Internet-Draft                BIER-TE ARCH                  January 2022
-
 
       2.4 Fixed and amended routing underlay explanations: detailed why
       no need for BFER routing underlay routing protocol extensions, but
@@ -2948,6 +2961,15 @@ Internet-Draft                BIER-TE ARCH                  January 2022
 
       Changed title "Traffic Engineering" to "Path Engineering"
 
+
+
+
+
+Eckert, et al.            Expires July 15, 2022                [Page 53]
+
+Internet-Draft                BIER-TE ARCH                  January 2022
+
+
       Added intro section of relationship BIER-PE to traffic
       engineering.
 
@@ -2962,13 +2984,6 @@ Internet-Draft                BIER-TE ARCH                  January 2022
       05: Review Jeffrey Zhang.
 
       Part 2:
-
-
-
-Eckert, et al.            Expires July 15, 2022                [Page 53]
-
-Internet-Draft                BIER-TE ARCH                  January 2022
-
 
       4.3 added note about leaf-BFER being also a propery of routing
       setup.
@@ -3003,6 +3018,14 @@ Internet-Draft                BIER-TE ARCH                  January 2022
 
       Fixed up explanation of ICC paper vs. bloom filter.
 
+
+
+
+Eckert, et al.            Expires July 15, 2022                [Page 54]
+
+Internet-Draft                BIER-TE ARCH                  January 2022
+
+
       04: spell check run.
 
       Addded remaining fixes for Sandys (Zhang Zheng) review:
@@ -3016,15 +3039,6 @@ Internet-Draft                BIER-TE ARCH                  January 2022
 
       1.  Added mentioning of prior work for traffic engineered paths
       with bloom filters.
-
-
-
-
-
-Eckert, et al.            Expires July 15, 2022                [Page 54]
-
-Internet-Draft                BIER-TE ARCH                  January 2022
-
 
       2.  Changed title from layers to components and added "BIER-TE
       control plane" to "BIER-TE Controller" to make it clearer, what it
@@ -3061,6 +3075,13 @@ Internet-Draft                BIER-TE ARCH                  January 2022
       primarily consists of examples and the early introduction of the
       BIER-TE Topology concept enabled by these examples.
 
+
+
+Eckert, et al.            Expires July 15, 2022                [Page 55]
+
+Internet-Draft                BIER-TE ARCH                  January 2022
+
+
       Amended comparison to SR.
 
       Changed syntax from [VRF] to {VRF} to indicate its optional and to
@@ -3074,13 +3095,6 @@ Internet-Draft                BIER-TE ARCH                  January 2022
       Tighter review of standards document == ensures arch will be
       better prepared for possible adoption by other WGs (e.g.  DetNet)
       or std. bodies.
-
-
-
-Eckert, et al.            Expires July 15, 2022                [Page 55]
-
-Internet-Draft                BIER-TE ARCH                  January 2022
-
 
       Requirement against the degree of existing implementations is self
       defined by the WG.  BIER WG seems to think it is not necessary to
@@ -3115,6 +3129,15 @@ Internet-Draft                BIER-TE ARCH                  January 2022
 
       - Source now on http://www.github.com/toerless/bier-te-arch
 
+
+
+
+
+Eckert, et al.            Expires July 15, 2022                [Page 56]
+
+Internet-Draft                BIER-TE ARCH                  January 2022
+
+
       - Please open issues on the github for change/improvement requests
       to the document - in addition to posting them on the list
       (bier@ietf.).  Thanks!.
@@ -3128,15 +3151,6 @@ Internet-Draft                BIER-TE ARCH                  January 2022
 
       04: Added comparison to Live-Live and BFIR to FRR section
       (Eckert).
-
-
-
-
-
-Eckert, et al.            Expires July 15, 2022                [Page 56]
-
-Internet-Draft                BIER-TE ARCH                  January 2022
-
 
       04: Removed FRR content into the new FRR draft [I-D.eckert-bier-
       te-frr] (Braun).
@@ -3172,6 +3186,14 @@ Internet-Draft                BIER-TE ARCH                  January 2022
 
 
 
+
+
+
+Eckert, et al.            Expires July 15, 2022                [Page 57]
+
+Internet-Draft                BIER-TE ARCH                  January 2022
+
+
       03: Updated the FRR section.  Added examples for FRR key concepts.
       Added BIER-in-BIER tunneling as option for tunnels in backup
       paths.  BIFT structure is expanded and contains an additional
@@ -3186,13 +3208,6 @@ Internet-Draft                BIER-TE ARCH                  January 2022
       a single BitString, and every SI and sub-domain would be a
       separate BIFT.  In BIER, each BIFT covers all SI.  This is now
       also how we define it in BIER-TE.
-
-
-
-Eckert, et al.            Expires July 15, 2022                [Page 57]
-
-Internet-Draft                BIER-TE ARCH                  January 2022
-
 
       02: Added Section 5.3 to explain the use of SI, sub-domains and
       BFR-id in BIER-TE and to give an example how to efficiently assign
@@ -3228,6 +3243,13 @@ Internet-Draft                BIER-TE ARCH                  January 2022
               DOI 10.17487/RFC8279, November 2017,
               <https://www.rfc-editor.org/info/rfc8279>.
 
+
+
+Eckert, et al.            Expires July 15, 2022                [Page 58]
+
+Internet-Draft                BIER-TE ARCH                  January 2022
+
+
    [RFC8296]  Wijnands, IJ., Ed., Rosen, E., Ed., Dolganow, A.,
               Tantsura, J., Aldrin, S., and I. Meilik, "Encapsulation
               for Bit Index Explicit Replication (BIER) in MPLS and Non-
@@ -3238,17 +3260,6 @@ Internet-Draft                BIER-TE ARCH                  January 2022
 
    [Bloom70]  Bloom, B., "Space/time trade-offs in hash coding with
               allowable errors", Comm. ACM  13(7):422-6, July 1970.
-
-
-
-
-
-
-
-Eckert, et al.            Expires July 15, 2022                [Page 58]
-
-Internet-Draft                BIER-TE ARCH                  January 2022
-
 
    [I-D.eckert-bier-te-frr]
               Huawei USA - Futurewei Technologies Inc., Bouygues
@@ -3288,6 +3299,13 @@ Internet-Draft                BIER-TE ARCH                  January 2022
               Traffic Engineering", draft-ietf-teas-rfc3272bis-13 (work
               in progress), November 2021.
 
+
+
+Eckert, et al.            Expires July 15, 2022                [Page 59]
+
+Internet-Draft                BIER-TE ARCH                  January 2022
+
+
    [ICC]      Reed, M., Al-Naday, M., Thomos, N., Trossen, D.,
               Petropoulos, G., and S. Spirou, "Stateless multicast
               switching in software defined networks",  IEEE
@@ -3298,13 +3316,6 @@ Internet-Draft                BIER-TE ARCH                  January 2022
    [RCSD94]   Zhang, H. and D. Domenico, "Rate-Controlled Service
               Disciplines",  Journal of High-Speed Networks, 1994, May
               1994, <https://dl.acm.org/doi/10.5555/2692227.2692232>.
-
-
-
-Eckert, et al.            Expires July 15, 2022                [Page 59]
-
-Internet-Draft                BIER-TE ARCH                  January 2022
-
 
    [RFC4253]  Ylonen, T. and C. Lonvick, Ed., "The Secure Shell (SSH)
               Transport Layer Protocol", RFC 4253, DOI 10.17487/RFC4253,
@@ -3342,6 +3353,15 @@ Internet-Draft                BIER-TE ARCH                  January 2022
               DOI 10.17487/RFC7988, October 2016,
               <https://www.rfc-editor.org/info/rfc7988>.
 
+
+
+
+
+Eckert, et al.            Expires July 15, 2022                [Page 60]
+
+Internet-Draft                BIER-TE ARCH                  January 2022
+
+
    [RFC8253]  Lopez, D., Gonzalez de Dios, O., Wu, Q., and D. Dhody,
               "PCEPS: Usage of TLS to Provide a Secure Transport for the
               Path Computation Element Communication Protocol (PCEP)",
@@ -3352,15 +3372,6 @@ Internet-Draft                BIER-TE ARCH                  January 2022
               Ananthakrishnan, H., and X. Liu, "A YANG Data Model for
               Network Topologies", RFC 8345, DOI 10.17487/RFC8345, March
               2018, <https://www.rfc-editor.org/info/rfc8345>.
-
-
-
-
-
-Eckert, et al.            Expires July 15, 2022                [Page 60]
-
-Internet-Draft                BIER-TE ARCH                  January 2022
-
 
    [RFC8401]  Ginsberg, L., Ed., Przygienda, T., Aldrin, S., and Z.
               Zhang, "Bit Index Explicit Replication (BIER) Support via
@@ -3394,17 +3405,6 @@ Authors' Addresses
    University of Tuebingen
 
    Email: menth@uni-tuebingen.de
-
-
-
-
-
-
-
-
-
-
-
 
 
 
