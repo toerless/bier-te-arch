@@ -58,7 +58,7 @@
 <!-- Change to "yes" if someone has disclosed IPR for the draft -->
 <!-- end of list of popular I-D processing instructions -->
 
-<rfc ipr="trust200902" docName="draft-ietf-bier-te-arch-11" category="std">
+<rfc ipr="trust200902" docName="draft-ietf-bier-te-arch-12" category="std">
         <front>
                 <title abbrev="BIER-TE ARCH">Tree Engineering for Bit Index Explicit Replication (BIER-TE)</title>
                 <author role="editor" fullname="Toerless Eckert" initials="T.T.E." surname="Eckert">
@@ -85,7 +85,7 @@
                                 <email>menth@uni-tuebingen.de</email>
                         </address>
                 </author>
-                <date month="November" year="2021"/>
+                <date month="January" year="2022"/>
                 <abstract>
 <t> This memo describes per-packet stateless strict and loose path
 steered replication and forwarding for Bit Index Explicit Replication
@@ -949,15 +949,14 @@ The DNC flag cannot be supported when using only [1] to mask bits.</t>
 <t>The modified and expanded Forwarding Pseudocode in <xref target="pseudocode-picture"/> specifies how to
 support all BIER-TE forwarding functions (required, recommended and optional):
 <list style="symbols">
-    <t>This pseudocode eliminates per-bit F-BM, therefore reducing the size of BIFT state by BitStringLength^2*SI and eliminating the need for per-packet-copy masking operation except for adjacencies with the DNC flag set:
+    <t>This pseudocode eliminates per-bit F-BM, therefore reducing the size of BIFT state by BitStringLength^2*SI and eliminating the need for per-packet-copy bit string operation except for adjacencies with the DNC flag set:
     <list style="symbols">
-        <t>AdjacentBits[SI] are bits with a non-empty list of adjacencies. This can be computed whenever the BIER-TE Controller updates the adjacencies.</t>
-        <t>Only the AdjacentBits need to be examined in the loop for packet copies.</t>
-        <t>The packet's BitString is masked with those AdjacentBits before the loop to avoid doing this repeatedly for every PacketCopy.</t>
+        <t>AdjacentBits[SI] are bit positions with a non-empty list of adjacencies in this BFR BIFT. This can be computed whenever the BIER-TE Controller updates (add/removes) adjacencies in the BIFT.</t>
+        <t>The BFR needs to create packet copies for these adjacent bits when they are set in the packets BitString. This set of bits is calculated in PktAdjacentBits.</t>
+        <t>All bit positions to which the BFR creates copies have to be cleared in packet copies to avoid loops. This is done by masking the bit string of the packet with ~AdjacentBits[SI]. When an adjacency has DNC set, this bit position is set again only for the packet copy towards that bit position.</t>
     </list></t>
-    <t>The code loops over the adjacencies because there may be more than one adjacency for a bit.</t>
-    <t>When an adjacency has the DNC bit, the bit is set in the packet copy (to save bits in rings for example).</t>
-    <t>The ECMP adjacency is shown. Its parameters are a ListOfAdjacencies from which one is picked.</t>
+    <t>BIFT entries may contain more than one adjacency in support of specific configurations such as <xref target="hubnspoke"/>. The code therefore includes a loop over these adjacencies.</t>
+    <t>The ECMP adjacency is shown. Its parameters are a seed and a ListOfAdjacencies from which one is picked.</t>
     <t>The forward_local, forward_routed, local_decap() adjacencies are shown with their parameters.</t>
 </list></t>
 
@@ -965,28 +964,31 @@ support all BIER-TE forwarding functions (required, recommended and optional):
 <artwork align="left"><![CDATA[
  void ForwardBitMaskPacket_withTE (Packet)
  {
-     SI=GetPacketSI(Packet);
-     Offset=SI*BitStringLength;
-     // Set variable for looping across only adjacent bits
-     AdjacentBits = Packet->BitString & ~AdjacentBits[SI];
+     SI = GetPacketSI(Packet);
+     Offset = SI * BitStringLength;
+     // Determine adjacent bits in the Packets BitString
+     PktAdjacentBits = Packet->BitString & AdjacentBits[SI];
+
      // Clear adjacent bits in Packet header to avoid loops
      Packet->BitString &= ~AdjacentBits[SI];
-     for (Index = GetFirstBitPosition(AdjacentBits); Index ;
-          Index = GetNextBitPosition(AdjacentBits, Index)) {
-         foreach adjacency BIFT[Index+Offset] { 
-             if(adjacency == ECMP(ListOfAdjacencies, seed) ) {
+
+     // Loop over PktAdjacentBits to create packet copies 
+     for (Index = GetFirstBitPosition(PktAdjacentBits); Index ;
+          Index = GetNextBitPosition(PktAdjacentBits, Index)) {
+         for adjacency in BIFT[Index+Offset]->Adjacencies { 
+             if(adjacency.type == ECMP(ListOfAdjacencies,seed) ) {
                  I = ECMP_hash(sizeof(ListOfAdjacencies),
-                               Packet->Entropy, seed);
+                               Packet->Entropy,seed);
                  adjacency = ListOfAdjacencies[I];
              }
              PacketCopy = Copy(Packet);
              switch(adjacency.type) {
                  case forward_connected(interface,neighbor,DNC):
-                     if(adjacency.DNC)
+                     if(DNC)
                          PacketCopy->BitString |= 1<<(Index-1);
                      SendToL2Unicast(PacketCopy,interface,neighbor);
 
-                 case forward_routed({VRF},l3-neighbor):
+                 case forward_routed({VRF,}l3-neighbor):
                      SendToL3(PacketCopy,{VRF,}l3-neighbor);
 
                  case local_decap({VRF},neighbor):
@@ -1191,13 +1193,11 @@ be leaf-BFER by fitting routing configuration that prohibits transit
 traffic to pass through the BFERs, which is commonly applied in these
 topologies.</t>
 
-<t>All leaf-BFERs in a BIER-TE domain can share a single bit position.
-This is possible because the bit position for the adjacency to reach the BFER
-can be used to distinguish whether or not packets should reach the BFER.</t>
+<t>In most situations, leaf-BFER that are to be addressed via the same BitString can share a single bit position for their local_decap() adjacency in that BitString and therefore save bit positions. On a non-leaf BFER, a received BIER-TE packet may only need to transit the BFER or it may need to also be decapsulated. Whether or not to decapsulate the packet therefore needs to be indicated by a unique bit position populated only on the BIFT of this BFER with a local_decap() adjacency. On a leaf-BFER, packets never need to pass through; any packet received is therefore usually intended to be decapsulated. This can be expressed by a single, shared bit position that is populated with a local_decap() adjacency on all leaf-BFER addressed by the BitString.</t>
 
-<t>This optimization will not work if an upstream interface of the BFER
-is using a bit position optimized as described in the following two
-sections (LAN, Hub and Spoke).</t>
+<t>The possible exception from this leaf-BFER bit position optimization can be cases where the bit position on the prior BIER-TE BFR (which created the packet copy for the leaf-BFER in question) is populated with multiple adjacencies as an optimization, such as in <xref target="lans"/> or <xref target="hubnspoke"/>. With either of these two optimizations, the sender of the packet could only control explicitly whether or not the packet was to be decapsulated on the leaf-BFER in question, if the leaf-BFER has a unique bit position for its local_decap() adjacency.</t>
+
+<t>However, if the bit position is shared across leaf-BFER, and packets are therefore decapsulated potentially unnecessarily, this may still be appropriate if the decapsulated payload of the BIER-TE packet does indicate whether or not the packet needs to be further processed/received. This is typically true for example if the payload is IP multicast because IP multicast on a BFER would know the membership state of the IP multicast paylod and be able to discard it if the packet was delivered unnecessarily by the BIER-TE layer. If the payload has no such membership indication, and the BFIR wants to have explicit control about which BFER are to receive and decapsulate a packet, then these two optimizations can not be used together with shared bit positions optimization for leaf-BFER.</t>
 
     </section>
     <!-- leaf-bfer -->
@@ -1759,7 +1759,7 @@ never be a BFER but only a BFIR.</t>
 
 <t>In BIER-TE, for a non-leaf BFER, there is usually a single BP for that BFER with a
 local_decap() adjacency on the BFER. The BFR-id for such a BFER can therefore
-equally be determined as in BIER: BFR-id = SI * BitStringLength + BP.</t>
+be determined using the same procedure as in (non-TE) BIER: BFR-id = SI * BitStringLength + BP.</t>
 
 <t>As explained in <xref target="leaf-bfer"/>, leaf BFERs do not need such
 a unique local_decap() adjacency, likewise, BFIR who are not also BFER
@@ -2081,13 +2081,19 @@ protect the active production process from such configuration attacks.</t>
 
   <section anchor="ack" title="Acknowledgements">
 
-  <t>The authors would like to thank Greg Shepherd, Ijsbrand Wijnands, Neale Ranns, Dirk Trossen, Sandy Zheng, Lou Berger, Jeffrey Zhang, Alvaro Retana and Wolfgang Braun for their reviews and suggestions.</t>
+  <t>The authors would like to thank Greg Shepherd, Ijsbrand Wijnands, Neale Ranns, Dirk Trossen, Sandy Zheng, Lou Berger, Jeffrey Zhang, Carsten Borman and Wolfgang Braun for their reviews and suggestions.</t>
+  <t> Special thanks to IESG reviews by Alvaro Retana (responsible AD/RTG), Benjamin Kaduk (SEC).</t>
   </section>
   <!-- ack -->
 
   <section anchor="changes" title="Change log [RFC Editor: Please remove]">
   <t>draft-ietf-bier-te-arch:
   <list>
+      <t>12:  IESG review Ben Kaduk (round 2):</t>
+      <t>4.4 Advanced pseudocode still had one wrong "~". Root cause seems to have been day 0 problem in pseudocode written for -01, "~" was inserted in the wrong one of two code lines. Also enhanced textual description and comments in pseudocode, changed variable name AdjacentBits to PktAdjacentBits to avoid confusion with AdjacentBits[SI].</t>
+      <t>5.1.3 Rewrote last two paragraphs explaining the sharing of bit positions for lead-BFER hopefully better. Also detailled how it interacts with other optimizations and the type of payload BIER-TE packets may carry.</t>
+      <t>4.4 (from Carsten Borman) changed spacing in pseudocode to be consistent. Fixed {VRF}, clarified pseudocode object syntax, typos.</t>
+
       <t>11:  IESG review Ben Kaduk, summary:</t>
       <t>One discuss for bug in pseudocode. turned out to be one cahrcter typo.</t>
       <t>Added (non-TE) prefix in places where BIER by itsels had to be better disambiguated.</t>
